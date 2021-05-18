@@ -1,0 +1,19 @@
+{
+  "kind": "identitytoolkit#GetAccountInfoResponse",
+  "users": [
+    {
+      "localId": "w3REIV6S4oMgPv2l0Hcq83ax6PJ2",
+      "createdAt": "1621192448769",
+      "disabled": false,
+      "phoneNumber": "+15005550100",
+      "providerUserInfo": [
+        {
+          "phoneNumber": "+15005550100",
+          "providerId": "phone",
+          "rawId": "+15005550100"
+        }
+      ],
+      "validSince": "1621192448"
+    }
+  ]
+}
