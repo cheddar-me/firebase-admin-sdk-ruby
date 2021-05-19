@@ -1,9 +1,9 @@
 require_relative "../../../spec_helper"
 
+CERTIFICATE_URL = "https://example.com/certificates"
+
 describe Firebase::Admin::Auth::CertificatesFetcher do
   include ActiveSupport::Testing::TimeHelpers
-
-  CERTIFICATE_URL = "https://example.com/certificates"
 
   describe "#fetch_certificates!" do
     let(:fetcher) { Firebase::Admin::Auth::CertificatesFetcher.new(CERTIFICATE_URL) }

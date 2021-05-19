@@ -4,7 +4,6 @@ module Firebase
   module Admin
     module Internal
       module Utils
-
         private
 
         INVALID_CHARS_PATTERN = /[^a-z0-9:\/?#\[\\\]@!$&'()*+,;=.\-_~%]/i
