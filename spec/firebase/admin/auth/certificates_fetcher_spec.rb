@@ -4,21 +4,14 @@ CERTIFICATE_URL = "https://example.com/certificates"
 
 describe Firebase::Admin::Auth::CertificatesFetcher do
   include ActiveSupport::Testing::TimeHelpers
+  include JWTHelper
 
   describe "#fetch_certificates!" do
     let(:fetcher) { Firebase::Admin::Auth::CertificatesFetcher.new(CERTIFICATE_URL) }
     let(:certificates) { fixture("auth/certificates.json").read }
 
     before do
-      @stub = stub_request(:get, CERTIFICATE_URL)
-        .to_return(
-          status: 200,
-          body: certificates,
-          headers: {
-            "cache-control": "public, max-age=600, must-revalidate, no-transform",
-            "content-type": "application/json; charset=utf-8"
-          }
-        )
+      @stub = stub_certificate_request(certificates, CERTIFICATE_URL)
     end
 
     context "when no certificates are cached" do

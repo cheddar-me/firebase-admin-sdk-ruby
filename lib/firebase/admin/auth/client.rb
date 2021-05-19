@@ -47,7 +47,7 @@ module Firebase
             password: validate_password(password),
             emailVerified: to_boolean(email_verified),
             disabled: to_boolean(disabled)
-          }.compact!
+          }.compact
           res = request(:post, "#{@base_path}/accounts", payload)
           uid = res&.fetch(:localId)
           raise Error, "failed to create new user #{res}" if uid.nil?

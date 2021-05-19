@@ -41,6 +41,8 @@ module Firebase
           ttl = match&.captures&.first&.to_i || 0
           certificates = res.body
           [certificates, ttl]
+        rescue => e
+          raise CertificateRequestError, e.message
         end
 
         # Checks if keys need to be refreshed.
