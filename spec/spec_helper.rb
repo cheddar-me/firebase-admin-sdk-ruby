@@ -6,6 +6,8 @@ require "webmock/rspec"
 require "firebase-admin-sdk"
 require "fakefs/spec_helpers"
 require "climate_control"
+require "active_support/testing/time_helpers"
+require "active_support/core_ext/numeric/time"
 
 require "helpers/auth_helper"
 

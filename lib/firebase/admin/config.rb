@@ -51,7 +51,6 @@ module Firebase
       def initialize(project_id: nil, service_account_id: nil)
         @project_id = project_id
         @service_account_id = service_account_id
-        freeze
       end
     end
   end

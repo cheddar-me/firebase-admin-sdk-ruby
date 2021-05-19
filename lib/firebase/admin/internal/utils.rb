@@ -2,10 +2,14 @@ require "addressable/uri"
 
 module Firebase
   module Admin
-    module Auth
+    module Internal
       module Utils
 
         private
+
+        INVALID_CHARS_PATTERN = /[^a-z0-9:\/?#\[\\\]@!$&'()*+,;=.\-_~%]/i
+        HOSTNAME_PATTERN = /^[a-zA-Z0-9]+[\w-]*([.]?[a-zA-Z0-9]+[\w-]*)*$/
+        PATHNAME_PATTERN = /^(\/[\w\-.~!$'()*+,;=:@%]+)*\/?$/
 
         def validate_uid(uid, required: false)
           return nil if uid.nil? && !required
@@ -36,19 +40,34 @@ module Firebase
           password
         end
 
-        def validate_photo_url(photo_url, required: false)
-          return nil if photo_url.nil? && !required
-          raise ArgumentError, "photo_url must be a non-empty string" unless photo_url.is_a?(String) && !photo_url.empty?
+        def validate_photo_url(url, required: false)
+          return nil if url.nil? && !required
+          raise ArgumentError, "photo_url must be a valid url" unless url.is_a?(String) && !url.empty?
+          raise ArgumentError, "photo_url must be a valid url" unless validate_url(url)
+          url
         end
 
         def validate_display_name(name, required: false)
           return nil if name.nil? && !required
           raise ArgumentError, "display_name must be a non-empty string" unless name.is_a?(String) && !name.empty?
+          name
         end
 
         def to_boolean(val)
-          return nil if val.nil?
-          !!val
+          !!val unless val.nil?
+        end
+
+        def validate_url(url)
+          return false unless url.is_a?(String) && !url.empty? && !url.match?(INVALID_CHARS_PATTERN)
+          begin
+            uri = Addressable::URI.parse(url)
+            return false unless %w[https http].include?(uri.scheme)
+            return false unless uri.hostname&.match?(HOSTNAME_PATTERN)
+            return false unless uri.path.empty? || uri.path == "/" || uri.path.match?(PATHNAME_PATTERN)
+            true
+          rescue
+            false
+          end
         end
       end
     end

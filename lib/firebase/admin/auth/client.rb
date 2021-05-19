@@ -1,11 +1,11 @@
 module Firebase
   module Admin
     module Auth
-      ID_TOOLKIT_URL = "https://identitytoolkit.googleapis.com".freeze
+      ID_TOOLKIT_URL = "https://identitytoolkit.googleapis.com"
 
       class Client
         include Firebase::Admin::Client
-        include Utils
+        include Firebase::Admin::Internal::Utils
 
         # Constructs an AuthClient
         def initialize(app)
@@ -14,6 +14,7 @@ module Firebase
           @credentials = app.credentials
           @base_url = ID_TOOLKIT_URL
           @base_path = "/v1/projects/#{@project_id}"
+          @id_token_verifier = IDTokenVerifier.new(app)
         end
 
         # Creates a new user account with the specified properties.
@@ -81,6 +82,31 @@ module Firebase
           get_user_by(phone_number: phone_number)
         end
 
+        # Deletes the user corresponding to the specified user id.
+        #
+        # @param [String] uid
+        #   The id of the user.
+        def delete_user(uid)
+          NotImplementedError
+        end
+
+        # Verifies the signature and data for the provided JWT.
+        #
+        # Accepts a signed token string, verifies that it is current, was issued to this project, and that
+        # it was correctly signed by Google.
+        #
+        # @param [String] token
+        #   A string of the encoded JWT.
+        # @param [Boolean] check_revoked Boolean
+        #   If true, checks whether the token has been revoked (optional).
+        # @return [Hash]
+        #   A hash of key-value pairs parsed from the decoded JWT.
+        def verify_id_token(token, check_revoked = false)
+          verified_claims = @id_token_verifier.verify(token)
+          id_token_revoked?(verified_claims) if check_revoked
+          verified_claims
+        end
+
         private
 
         # Gets the user corresponding to the provided key
@@ -97,6 +123,10 @@ module Firebase
           res = request(:post, "#{@base_path}/accounts:lookup", payload)
           users = res&.fetch(:users)
           UserRecord.new(users.first) if users.is_a?(Array) && users.length > 0
+        end
+
+        def id_token_revoked?(claims)
+          raise NotImplementedError
         end
       end
     end
