@@ -9,9 +9,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run with fresh bundle
-        run: rm Gemfile.lock
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
