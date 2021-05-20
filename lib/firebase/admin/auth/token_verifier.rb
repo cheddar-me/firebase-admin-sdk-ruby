@@ -1,4 +1,5 @@
 require "jwt"
+require "openssl/x509"
 
 module Firebase
   module Admin
@@ -52,7 +53,6 @@ module Firebase
           {
             iss: issuer,
             aud: @project_id,
-            exp: Time.now.to_i,
             algorithm: "RS256",
             verify_iat: true,
             verify_iss: true,
@@ -64,6 +64,8 @@ module Firebase
           return nil unless header["kid"].is_a?(String)
           certificate = @certificates.fetch_certificates![header["kid"]]
           OpenSSL::X509::Certificate.new(certificate).public_key unless certificate.nil?
+        rescue OpenSSL::X509::CertificateError => e
+          raise InvalidCertificateError, e.message
         end
       end
 

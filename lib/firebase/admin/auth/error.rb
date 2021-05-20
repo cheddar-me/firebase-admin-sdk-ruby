@@ -7,6 +7,9 @@ module Firebase
       # Raised when a request for certificates fails.
       class CertificateRequestError < Error; end
 
+      # Raised when certificate is invalid.
+      class InvalidCertificateError < Error; end
+
       # Raised when id token verification fails.
       class InvalidTokenError < Error; end
 
