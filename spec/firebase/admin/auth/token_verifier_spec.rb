@@ -80,6 +80,7 @@ describe Firebase::Admin::Auth::IDTokenVerifier do
 
     context "when the public key certificates fail to fetch" do
       it "should raise an InvalidTokenError" do
+        key, _ = create_certificate
         stub_request(:get, cert_uri).to_return(status: 404)
         jwt = encode_jwt("RS256", "12345", key)
         expect { id_token_verifier.verify(jwt) }.to raise_error(Firebase::Admin::Auth::CertificateRequestError)
