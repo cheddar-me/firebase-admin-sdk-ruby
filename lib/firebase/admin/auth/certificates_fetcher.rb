@@ -1,4 +1,5 @@
 require "time"
+require "monitor"
 
 module Firebase
   module Admin
@@ -16,6 +17,7 @@ module Firebase
           @url = url
           @certificates = {}
           @certificates_expire_at = Time.now
+          @monitor = Monitor.new
         end
 
         # Fetches certificates.
@@ -26,10 +28,12 @@ module Firebase
         #
         # @return [Hash]
         def fetch_certificates!
-          return @certificates unless should_refresh?
-          keys, ttl = refresh
-          @certificates_expire_at = Time.now + ttl
-          @certificates = keys
+          @monitor.synchronize do
+            return @certificates unless should_refresh?
+            keys, ttl = refresh
+            @certificates_expire_at = Time.now + ttl
+            @certificates = keys
+          end
         end
 
         private

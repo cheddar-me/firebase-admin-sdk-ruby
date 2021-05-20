@@ -87,7 +87,7 @@ module Firebase
         # @param [String] uid
         #   The id of the user.
         def delete_user(uid)
-          NotImplementedError
+          raise NotImplementedError
         end
 
         # Verifies the signature and data for the provided JWT.
