@@ -1,7 +1,7 @@
 module AuthHelper
   # @return [WebMock::RequestStub]
   def stub_auth_request(method, path)
-    uri = "#{Firebase::Admin::Auth::ID_TOOLKIT_URL}/v1/projects/test-adminsdk-project#{path}"
+    uri = "#{Firebase::Admin::Auth::ID_TOOLKIT_URL}/projects/test-adminsdk-project#{path}"
     stub_request(method, uri)
   end
 

@@ -6,7 +6,7 @@ module Firebase
     module Auth
       # Fetches public key certificates used for signature verification.
       class CertificatesFetcher
-        include Firebase::Admin::Internal::Utils
+        include Utils
 
         # Constructs a new certificates fetcher.
         #
@@ -18,6 +18,7 @@ module Firebase
           @certificates = {}
           @certificates_expire_at = Time.now
           @monitor = Monitor.new
+          @client = Firebase::Admin::Internal::HTTPClient.new
         end
 
         # Fetches certificates.
@@ -40,7 +41,7 @@ module Firebase
 
         # Refreshes and returns the certificates
         def refresh
-          res = connection.get(@url)
+          res = @client.get(@url)
           match = res.headers["cache-control"]&.match(/max-age=([0-9]+)/)
           ttl = match&.captures&.first&.to_i || 0
           certificates = res.body
@@ -54,23 +55,6 @@ module Firebase
         # @return [Boolean]
         def should_refresh?
           @certificates.nil? || @certificates.empty? || @certificates_expire_at < Time.now
-        end
-
-        def connection
-          options = {
-            headers: {
-              Accept: "application/json; charset=utf-8",
-              "User-Agent": USER_AGENT
-            }
-          }
-
-          @connection ||= Faraday::Connection.new(options) do |c|
-            c.use Faraday::Request::UrlEncoded
-            c.use FaradayMiddleware::Mashify
-            c.use Faraday::Response::ParseJson
-            c.use Faraday::Response::RaiseError
-            c.adapter(Faraday.default_adapter)
-          end
         end
       end
     end

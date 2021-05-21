@@ -86,5 +86,24 @@ describe Firebase::Admin::Auth::IDTokenVerifier do
         expect { id_token_verifier.verify(jwt) }.to raise_error(Firebase::Admin::Auth::CertificateRequestError)
       end
     end
+
+    context "when is_emulator is true and the token doesn't contain a signature" do
+      it "should return the payload" do
+        jwt = encode_jwt("none")
+        decoded_token = id_token_verifier.verify(jwt, is_emulator: true)
+        expect(decoded_token).to be_a(Hash)
+        expect(decoded_token).to include("uid" => "12345")
+      end
+    end
+
+    context "when is_emulator is true and the token contains a signature" do
+      it "should raise" do
+        key, cert = create_certificate
+        stub = stub_certificate_request({"12345" => cert}, cert_uri)
+        jwt = encode_jwt("RS256", "12345", key)
+        expect { id_token_verifier.verify(jwt, is_emulator: true) }.to raise_error(Firebase::Admin::Auth::InvalidTokenError)
+        expect(stub).to have_been_requested.times(0)
+      end
+    end
   end
 end

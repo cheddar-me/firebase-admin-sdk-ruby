@@ -9,8 +9,8 @@ require "climate_control"
 require "active_support/testing/time_helpers"
 require "active_support/core_ext/numeric/time"
 
-require "helpers/auth_helper"
-require "helpers/jwt_helper"
+require "unit/helpers/auth_helper"
+require "unit/helpers/jwt_helper"
 
 WebMock.disallow_net_connect!
 

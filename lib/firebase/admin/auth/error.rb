@@ -15,6 +15,9 @@ module Firebase
 
       # Raised when id token verification fails because the token is expired.
       class ExpiredTokenError < Error; end
+
+      # Raised when a user cannot be created.
+      class CreateUserError < Error; end
     end
   end
 end

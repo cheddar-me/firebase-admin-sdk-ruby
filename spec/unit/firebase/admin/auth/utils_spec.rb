@@ -1,7 +1,7 @@
 require_relative "../../../spec_helper"
 
-describe Firebase::Admin::Internal::Utils do
-  include Firebase::Admin::Internal::Utils
+describe Firebase::Admin::Auth::Utils do
+  include Firebase::Admin::Auth::Utils
 
   describe "#validate_uid" do
     it "should return the value if the argument is valid" do
@@ -166,6 +166,78 @@ describe Firebase::Admin::Internal::Utils do
 
     it "should return nil if the value is nil" do
       expect(to_boolean(nil)).to be_nil
+    end
+  end
+
+  describe "#is_emulated?" do
+    context "when FIREBASE_AUTH_EMULATOR_HOST is set" do
+      it "should return true if the value is valid" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "localhost:9099") do
+          expect(is_emulated?).to be_truthy
+        end
+      end
+
+      it "should raise an ArgumentError if the value contains //" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "http://localhost:9099") do
+          expect { is_emulated? }.to raise_error(Firebase::Admin::ArgumentError)
+        end
+      end
+    end
+  end
+
+  describe "#get_emulator_host" do
+    context "when FIREBASE_AUTH_EMULATOR_HOST is set" do
+      it "should return the value" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "localhost:9099") do
+          expect(get_emulator_host).to eq("localhost:9099")
+        end
+      end
+
+      it "should return nil if the value is empty" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "") do
+          expect(get_emulator_host).to be_nil
+        end
+      end
+
+      it "should raise an ArgumentError if the value contains //" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "http://localhost:9099") do
+          expect { is_emulated? }.to raise_error(Firebase::Admin::ArgumentError)
+        end
+      end
+    end
+
+    context "when FIREBASE_AUTH_EMULATOR_HOST is not set" do
+      it "should return nil" do
+        expect(get_emulator_host).to be_nil
+      end
+    end
+  end
+
+  describe "#get_emulator_v1_url" do
+    context "when FIREBASE_AUTH_EMULATOR_HOST is set" do
+      it "should return the url" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "localhost:9099") do
+          expect(get_emulator_v1_url).to eq("http://localhost:9099/identitytoolkit.googleapis.com/v1")
+        end
+      end
+
+      it "should return nil if the value is empty" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "") do
+          expect(get_emulator_v1_url).to be_nil
+        end
+      end
+
+      it "should raise an ArgumentError if the value contains //" do
+        ClimateControl.modify(FIREBASE_AUTH_EMULATOR_HOST: "http://localhost:9099") do
+          expect { get_emulator_v1_url }.to raise_error(Firebase::Admin::ArgumentError)
+        end
+      end
+    end
+
+    context "when FIREBASE_AUTH_EMULATOR_HOST is not set" do
+      it "should return nil" do
+        expect(get_emulator_v1_url).to be_nil
+      end
     end
   end
 end
