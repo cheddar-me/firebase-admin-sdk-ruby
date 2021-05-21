@@ -5,7 +5,7 @@ require "faraday_middleware"
 module Firebase
   module Admin
     # The admin sdk user agent.
-    USER_AGENT = "Firebase/HTTP/#{VERSION}/#{RUBY_VERSION}/AdminRuby".freeze
+    USER_AGENT = "Firebase/HTTP/#{VERSION}/#{RUBY_VERSION}/AdminRuby"
 
     # A client for performing authenticated http requests to the admin REST API.
     module Client

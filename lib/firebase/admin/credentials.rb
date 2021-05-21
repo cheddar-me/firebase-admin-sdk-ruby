@@ -49,6 +49,15 @@ module Firebase
       # Gets the google credentials
       attr_reader :credentials
 
+      # Constructs a Credential from the specified Google Credentials.
+      #
+      # @param [Google::Auth::ServiceAccountCredentials, Google::Auth::UserRefreshCredentials, Google::Auth::GCECredentials] credentials
+      #   The google credentials to connect with.
+      def initialize(credentials)
+        raise ArgumentError, "credentials cannot be nil" if credentials.nil?
+        @credentials = credentials
+      end
+
       # Gets the google project id
       def project_id
         @credentials&.project_id
@@ -57,15 +66,6 @@ module Firebase
       # Apply the credentials
       def apply!(hash, opts = {})
         @credentials.apply!(hash, opts)
-      end
-
-      # Constructs a Credential from the specified Google Credentials.
-      #
-      # @param [Google::Auth::ServiceAccountCredentials, Google::Auth::UserRefreshCredentials, Google::Auth::GCECredentials] credentials
-      #   The google credentials to connect with.
-      def initialize(credentials)
-        raise ArgumentError, "credentials cannot be nil" if credentials.nil?
-        @credentials = credentials
       end
     end
   end
