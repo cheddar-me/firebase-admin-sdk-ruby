@@ -24,12 +24,15 @@ jobs:
         uses: actions/cache@v2
         id: cache-firebase
         with:
-          path: /usr/local/bin/firebase
+          path: tools/firebase
           key: ${{ runner.os }}-firebase-tools
 
       - name: Install firebase tools
         if: steps.cache-firebase.outputs.cache-hit != 'true'
-        run: curl -sL firebase.tools | bash
+        run: |
+          mkdir -p tools
+          curl -o tools/firebase -L https://firebase.tools/bin/linux/latest
+          chmod +rx tools/firebase
 
       - name: Run integration tests
-        run: firebase emulators:exec --only auth --project test-adminsdk-project 'bunlde exec rake integration'
+        run: tools/firebase emulators:exec --only auth --project test-adminsdk-project 'bunlde exec rake integration'
