@@ -12,7 +12,8 @@ module Firebase
         # @param [Credentials] credentials The credentials to authenticate with.
         # @param [String, nil] url_override The base url to override with.
         def initialize(project_id, credentials, url_override = nil)
-          uri = "#{url_override || ID_TOOLKIT_URL}/projects/#{project_id}/"
+          uri = "#{url_override || ID_TOOLKIT_URL}/"
+          @project_id = project_id
           @client = Firebase::Admin::Internal::HTTPClient.new(uri: uri, credentials: credentials)
         end
 
@@ -41,7 +42,7 @@ module Firebase
             emailVerified: to_boolean(email_verified),
             disabled: to_boolean(disabled)
           }.compact
-          res = @client.post("accounts", payload).body
+          res = @client.post(with_path("accounts"), payload).body
           uid = res&.fetch(:localId)
           raise CreateUserError, "failed to create user #{res}" if uid.nil?
           get_user_by(uid: uid)
@@ -57,20 +58,24 @@ module Firebase
         # @return [UserRecord] A user or nil if not found
         def get_user_by(query)
           if (uid = query[:uid])
-            payload = {localId: validate_uid(uid, required: true)}
+            payload = {localId: Array(validate_uid(uid, required: true))}
           elsif (email = query[:email])
-            payload = {email: validate_email(email, required: true)}
+            payload = {email: Array(validate_email(email, required: true))}
           elsif (phone_number = query[:phone_number])
-            payload = {phoneNumber: validate_phone_number(phone_number, required: true)}
+            payload = {phoneNumber: Array(validate_phone_number(phone_number, required: true))}
           else
             raise ArgumentError, "Unsupported query: #{query}"
           end
-          res = @client.post("accounts:lookup", payload).body
+          res = @client.post(with_path("accounts:lookup"), payload).body
           users = res&.fetch(:users)
           UserRecord.new(users[0]) if users.is_a?(Array) && users.length > 0
         end
 
         private
+
+        def with_path(path)
+          "projects/#{@project_id}/#{path}"
+        end
 
         include Utils
       end

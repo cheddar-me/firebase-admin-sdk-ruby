@@ -16,7 +16,7 @@ module Firebase
           @credentials = EmulatorCredentials.new if @emulated
 
           @id_token_verifier = IDTokenVerifier.new(app)
-          @user_manager = UserManager.new(app.project_id, app.credentials, v1_url_override)
+          @user_manager = UserManager.new(@project_id, @credentials, v1_url_override)
         end
 
         # Checks if the auth client is configured to use the Firebase Auth Emulator.

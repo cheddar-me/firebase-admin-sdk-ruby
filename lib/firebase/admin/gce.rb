@@ -1,3 +1,6 @@
+require "faraday"
+require "googleauth/compute_engine"
+
 module Firebase
   module Admin
     module GCE
