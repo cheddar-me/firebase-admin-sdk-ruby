@@ -46,7 +46,6 @@ describe "Firebase::Admin::Auth::Client" do
         claims = app.auth.verify_id_token(id_token)
         expect(claims).to be_a(Hash)
         expect(claims["uid"]).to eq(user.uid)
-        puts claims
       end
     end
   end
