@@ -35,4 +35,4 @@ jobs:
           chmod +rx tools/firebase
 
       - name: Run integration tests
-        run: tools/firebase emulators:exec --only auth --project test-adminsdk-project 'bunlde exec rake integration'
+        run: tools/firebase emulators:exec --only auth --project test-adminsdk-project 'bundle exec rake integration'
