@@ -30,7 +30,7 @@ module Firebase
         # @param [String, nil] uid The id to assign to the newly created user.
         # @param [String, nil] display_name The user’s display name.
         # @param [String, nil] email The user’s primary email.
-        # @param [String, nil] email_verified A boolean indicating whether or not the user’s primary email is verified.
+        # @param [Boolean, nil] email_verified A boolean indicating whether or not the user’s primary email is verified.
         # @param [String, nil] phone_number The user’s primary phone number.
         # @param [String, nil] photo_url The user’s photo URL.
         # @param [String, nil] password The user’s raw, unhashed password.

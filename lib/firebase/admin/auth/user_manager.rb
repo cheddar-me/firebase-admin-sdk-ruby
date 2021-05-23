@@ -22,7 +22,7 @@ module Firebase
         # @param [String, nil] uid The id to assign to the newly created user.
         # @param [String, nil] display_name The user’s display name.
         # @param [String, nil] email The user’s primary email.
-        # @param [String, nil] email_verified A boolean indicating whether or not the user’s primary email is verified.
+        # @param [Boolean, nil] email_verified A boolean indicating whether or not the user’s primary email is verified.
         # @param [String, nil] phone_number The user’s primary phone number.
         # @param [String, nil] photo_url The user’s photo URL.
         # @param [String, nil] password The user’s raw, unhashed password.
@@ -67,8 +67,16 @@ module Firebase
             raise ArgumentError, "Unsupported query: #{query}"
           end
           res = @client.post(with_path("accounts:lookup"), payload).body
-          users = res&.fetch(:users)
+          users = res[:users] if res
           UserRecord.new(users[0]) if users.is_a?(Array) && users.length > 0
+        end
+
+        # Deletes the user corresponding to the specified user id.
+        #
+        # @param [String] uid
+        #   The id of the user.
+        def delete_user(uid)
+          @client.post(with_path("accounts:delete"), {localId: validate_uid(uid, required: true)})
         end
 
         private
