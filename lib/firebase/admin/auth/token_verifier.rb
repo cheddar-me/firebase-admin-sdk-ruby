@@ -17,13 +17,13 @@ module Firebase
           @certificates = CertificatesFetcher.new(certificates_url)
         end
 
-        def verify(token, is_emulator = false)
-          raise NotImplementedError if is_emulator
-          decoded_token = JWT.decode(token, nil, !is_emulator, decode_options) do |header|
-            find_key(header)
-          end
-          # manually verify the sub
-          payload = decoded_token.first
+        # Verifies a Firebase ID token.
+        #
+        # @param [String] token A Firebase JWT ID token.
+        # @param [Boolean] is_emulator skips signature verification if true.
+        # @return [Hash] the verified claims.
+        def verify(token, is_emulator: false)
+          payload = decode(token, is_emulator).first
           sub = payload["sub"]
           raise JWT::InvalidSubError, "Invalid subject." unless sub.is_a?(String) && !sub.empty?
           payload["uid"] = sub
@@ -66,6 +66,21 @@ module Firebase
           OpenSSL::X509::Certificate.new(certificate).public_key unless certificate.nil?
         rescue OpenSSL::X509::CertificateError => e
           raise InvalidCertificateError, e.message
+        end
+
+        def decode(token, is_emulator)
+          return decode_unsigned(token) if is_emulator
+          JWT.decode(token, nil, true, decode_options) do |header|
+            find_key(header)
+          end
+        end
+
+        def decode_unsigned(token)
+          raise InvalidTokenError, "token must not be nil" unless token
+          raise InvalidTokenError, "token must be a string" unless token.is_a?(String)
+          raise InvalidTokenError, "The auth emulator only accepts unsigned ID tokens." unless token.split(".").length == 2
+          options = decode_options.merge({algorithm: "none"})
+          JWT.decode(token, nil, false, options)
         end
       end
 

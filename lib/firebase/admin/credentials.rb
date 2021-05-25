@@ -60,12 +60,19 @@ module Firebase
 
       # Gets the google project id
       def project_id
-        @credentials&.project_id
+        @credentials.project_id
       end
 
       # Apply the credentials
       def apply!(hash, opts = {})
         @credentials.apply!(hash, opts)
+      end
+    end
+
+    # Firebase Admin emulator credentials.
+    class EmulatorCredentials
+      def apply!(hash, opts = {})
+        hash[:authorization] = "Bearer owner"
       end
     end
   end

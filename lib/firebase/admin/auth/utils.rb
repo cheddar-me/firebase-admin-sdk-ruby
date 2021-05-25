@@ -1,10 +1,8 @@
-require "addressable/uri"
-
 module Firebase
   module Admin
-    module Internal
+    module Auth
       module Utils
-        private
+        AUTH_EMULATOR_HOST_VAR = "FIREBASE_AUTH_EMULATOR_HOST"
 
         INVALID_CHARS_PATTERN = /[^a-z0-9:\/?#\[\\\]@!$&'()*+,;=.\-_~%]/i
         HOSTNAME_PATTERN = /^[a-zA-Z0-9]+[\w-]*([.]?[a-zA-Z0-9]+[\w-]*)*$/
@@ -56,10 +54,12 @@ module Firebase
           !!val unless val.nil?
         end
 
+        module_function
+
         def validate_url(url)
           return false unless url.is_a?(String) && !url.empty? && !url.match?(INVALID_CHARS_PATTERN)
           begin
-            uri = Addressable::URI.parse(url)
+            uri = URI.parse(url)
             return false unless %w[https http].include?(uri.scheme)
             return false unless uri.hostname&.match?(HOSTNAME_PATTERN)
             return false unless uri.path.empty? || uri.path == "/" || uri.path.match?(PATHNAME_PATTERN)
@@ -67,6 +67,25 @@ module Firebase
           rescue
             false
           end
+        end
+
+        def get_emulator_host
+          emulator_host = ENV[AUTH_EMULATOR_HOST_VAR]&.strip
+          return nil unless emulator_host && !emulator_host.empty?
+          if emulator_host.include?("//")
+            msg = "Invalid #{AUTH_EMULATOR_HOST_VAR}: \"#{emulator_host}\". It must follow the format \"host:post\""
+            raise ArgumentError, msg
+          end
+          emulator_host
+        end
+
+        def get_emulator_v1_url
+          return nil unless (emulator_host = get_emulator_host)
+          "http://#{emulator_host}/identitytoolkit.googleapis.com/v1"
+        end
+
+        def is_emulated?
+          !!get_emulator_host
         end
       end
     end

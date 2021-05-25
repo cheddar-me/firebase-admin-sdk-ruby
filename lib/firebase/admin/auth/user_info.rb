@@ -47,6 +47,13 @@ module Firebase
         def provider_id
           @data.fetch(:providerId)
         end
+
+        # Converts the object into a hash.
+        #
+        # @return [Hash]
+        def to_h
+          @data.dup
+        end
       end
     end
   end
