@@ -1,8 +1,12 @@
-# Firebase::Admin::Sdk
+# Firebase Admin Ruby SDK
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/firebase/admin/sdk`. To experiment with that code, run `bin/console` for an interactive prompt.
+The Firebase Admin Ruby SDK enables access to Firebase services from privileged environments (such as servers or cloud)
+in Ruby.
 
-TODO: Delete this and the text above, and describe your gem
+For more information, visit the
+[Firebase Admin SDK setup guide](https://firebase.google.com/docs/admin/setup/).
+
+This gem is currently in alpha and not recommended for production use (yet).
 
 ## Installation
 
@@ -22,22 +26,27 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Application Default Credentials
 
-## Development
+```ruby
+gem 'firebase-admin-sdk'
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+app = Firebase::Admin::App.new
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Using a service account
+
+```ruby
+gem 'firebase-admin-sdk'
+
+creds = Firebase::Admin::Credentials.from_file('service_account.json')
+app = Firebase::Admin::App.new(credentials: creds)
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/firebase-admin-sdk. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/firebase-admin-sdk/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/cheddar-me/firebase-admin-sdk.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Firebase::Admin::Sdk project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/firebase-admin-sdk/blob/master/CODE_OF_CONDUCT.md).

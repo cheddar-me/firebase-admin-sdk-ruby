@@ -78,7 +78,7 @@ module Firebase
         def decode_unsigned(token)
           raise InvalidTokenError, "token must not be nil" unless token
           raise InvalidTokenError, "token must be a string" unless token.is_a?(String)
-          raise InvalidTokenError, "The auth emulator only accepts unsigned ID tokens." unless token.split(".").length == 2
+          raise InvalidTokenError, "The auth emulator only accepts unsigned ID tokens." if token.split(".").length == 3
           options = decode_options.merge({algorithm: "none"})
           JWT.decode(token, nil, false, options)
         end
