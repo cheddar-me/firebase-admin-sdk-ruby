@@ -103,7 +103,7 @@ describe "Firebase::Admin::Auth::Client" do
         user = app.auth.create_user(email: "test@example.com", password: "123456", phone_number: "+15105551234")
         token_info = sign_in_with_email_password(email: "test@example.com", password: "123456")
         expect(token_info).to be_a(Hash)
-        id_token = token_info.fetch(:idToken)
+        id_token = token_info.fetch("idToken")
         claims = app.auth.verify_id_token(id_token)
         expect(claims).to be_a(Hash)
         expect(claims["uid"]).to eq(user.uid)
