@@ -17,27 +17,27 @@ module Firebase
 
         # Gets the ID of this user.
         def uid
-          @data.fetch(:rawId)
+          @data["rawId"]
         end
 
         # Gets the display name of this user.
         def display_name
-          @data.fetch(:displayName)
+          @data["displayName"]
         end
 
         # Gets the email address associated with this user.
         def email
-          @data.fetch(:email)
+          @data["email"]
         end
 
         # Gets the phone number associated with this user.
         def phone_number
-          @data.fetch(:phoneNumber)
+          @data["phoneNumber"]
         end
 
         # Gets the photo url of this user.
         def photo_url
-          @data.fetch(:photoUrl)
+          @data["photoUrl"]
         end
 
         # Gets the id of the identity provider.
@@ -45,7 +45,7 @@ module Firebase
         # This can be a short domain name (e.g. google.com), or the identity of an OpenID
         # identity provider.
         def provider_id
-          @data.fetch(:providerId)
+          @data["providerId"]
         end
 
         # Converts the object into a hash.

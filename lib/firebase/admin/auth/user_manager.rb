@@ -43,7 +43,7 @@ module Firebase
             disabled: to_boolean(disabled)
           }.compact
           res = @client.post(with_path("accounts"), payload).body
-          uid = res&.fetch(:localId)
+          uid = res&.fetch("localId")
           raise CreateUserError, "failed to create user #{res}" if uid.nil?
           get_user_by(uid: uid)
         end
@@ -67,7 +67,7 @@ module Firebase
             raise ArgumentError, "Unsupported query: #{query}"
           end
           res = @client.post(with_path("accounts:lookup"), payload).body
-          users = res[:users] if res
+          users = res["users"] if res
           UserRecord.new(users[0]) if users.is_a?(Array) && users.length > 0
         end
 

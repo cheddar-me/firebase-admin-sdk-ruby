@@ -58,7 +58,6 @@ module Firebase
             c.use CredentialsMiddleware, credentials: @credentials unless @credentials.nil?
             c.use Faraday::Request::UrlEncoded
             c.use FaradayMiddleware::EncodeJson
-            c.use FaradayMiddleware::Mashify
             c.use Faraday::Response::ParseJson
             c.use Faraday::Response::RaiseError
             c.adapter(Faraday.default_adapter)
