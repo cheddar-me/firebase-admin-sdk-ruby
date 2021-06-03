@@ -7,7 +7,7 @@ module Firebase
       class UserRecord < UserInfo
         # Gets the ID of this user.
         def uid
-          @data.fetch(:localId)
+          @data["localId"]
         end
 
         # Gets the id of the identity provider.
@@ -18,11 +18,11 @@ module Firebase
         end
 
         def email_verified?
-          !!@data.fetch(:emailVerified)
+          !!@data["emailVerified"]
         end
 
         def disabled?
-          !!@data.fetch(:disabled)
+          !!@data["disabled"]
         end
 
         # Gets the time, in milliseconds since the epoch, before which tokens are invalid.
@@ -49,13 +49,13 @@ module Firebase
         #
         # @return [Array of UserInfo]
         def provider_data
-          providers = @data.fetch(:providerUserInfo) || []
+          providers = @data["providerUserInfo"] || []
           providers.to_a.map { |p| UserInfo.new(p) }
         end
 
         # Gets any custom claims set on this user account.
         def custom_claims
-          claims = @data.fetch(:customAttributes)
+          claims = @data["customAttributes"]
           parsed = JSON.parse(claims) unless claims.nil?
           parsed if parsed.is_a?(Hash) && !parsed.empty?
         end
