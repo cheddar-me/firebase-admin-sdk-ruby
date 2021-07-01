@@ -3,6 +3,16 @@ module Firebase
     module FCM
       # A client for communicating with the Firebase Cloud Messaging service.
       class Client
+        FCM_HOST = "https://fcm.googleapis.com"
+        IID_HOST = "https://iid.googleapis.com"
+        IID_HEADERS = {access_token_auth: "true"}
+
+        def initialize(app)
+          @project_id = app.project_id
+          @http_client = Firebase::Admin::Internal::HTTPClient.new(credentials: app.credentials)
+          @message_encoder = MessageEncoder.new
+        end
+
         # Sends a message via Firebase Cloud Messaging (FCM).
         #
         # If the `dry_run` flag is set, the message will not be actually delivered to the recipients.
@@ -61,6 +71,17 @@ module Firebase
         def unsubscribe_from_topic(tokens, topic)
           raise NotImplementedError
         end
+
+        private
+
+      end
+    end
+
+    class App
+      # Gets the Firebase Cloud Messaging client for this App.
+      # @return [Firebase::Admin::FCM::Client]
+      def fcm
+        @fcm_client ||= FCM::Client.new(self)
       end
     end
   end

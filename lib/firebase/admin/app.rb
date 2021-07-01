@@ -23,12 +23,6 @@ module Firebase
         @service_account_id = @config.service_account_id
         @project_id = @config.project_id || @credentials.project_id
       end
-
-      # Gets the auth client for this App.
-      # @return [Firebase::Admin::Auth::Client]
-      def auth
-        @auth_client ||= Auth::Client.new(self)
-      end
     end
   end
 end
