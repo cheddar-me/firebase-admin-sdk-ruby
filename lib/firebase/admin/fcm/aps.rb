@@ -3,7 +3,7 @@ module Firebase
     module FCM
       # Aps dictionary to be included in an APNS payload.
       class APS
-        # @return [String, APSAlert, nil]
+        # @return [APSAlert, String, nil]
         #   Alert to be included in the message.
         attr_accessor :alert
 
@@ -39,7 +39,7 @@ module Firebase
 
         # Initializes an {APS}.
         #
-        # @param [String, APSAlert, nil] alert
+        # @param [APSAlert, String, nil] alert
         #   Alert to be included in the message (optional).
         # @param [Integer, nil] badge
         #   Badge to be displayed with the message (optional).

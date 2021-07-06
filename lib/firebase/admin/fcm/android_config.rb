@@ -14,14 +14,14 @@ module Firebase
         attr_accessor :priority
 
         # @return [Numeric, nil]
-        #   Time-to-live duration of the message in milliseconds.
+        #   Time-to-live duration of the message in seconds.
         attr_accessor :ttl
 
         # @return [String, nil]
         #   Package name of the application where the registration tokens must match in order to receive the message.
         attr_accessor :restricted_package_name
 
-        # @return [Hash<String, String>, nil]
+        # @return [Hash{String,Symbol => String}, nil]
         #   A hash of data fields to be included in the message. All keys and values must be strings.
         #   When provided, overrides any data fields set on the top-level message.
         attr_accessor :data
@@ -43,11 +43,11 @@ module Firebase
         #   Must be either `high` or `normal`.
         # @param [Numeric, nil] ttl
         #   The time-to-live duration of the message (optional).
-        #   Time-to-live duration of the message in milliseconds.
+        #   Time-to-live duration of the message in seconds.
         # @param [String, nil] restricted_package_name
         #   The package name of the application where the registration tokens must match in order to receive
         #   the message (optional).
-        # @param [Hash<String, String>, nil] data
+        # @param [Hash{String,Symbol => String}, nil] data
         #   A hash of data fields to be included in the message (optional).
         #   All keys and values must be strings.
         # @param [AndroidNotification, nil] notification

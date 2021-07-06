@@ -10,17 +10,17 @@ module Firebase
         attr_accessor :aps
 
         # @return [Hash] Custom fields to include in the payload.
-        attr_accessor :custom_data
+        attr_accessor :data
 
         # Initializes a payload.
         #
         # @param [APS] aps
         #   An {APS} instance to be included in the payload.
-        # @param [Hash] custom_data
+        # @param [Hash, nil] data
         #   Arbitrary keyword arguments to be included as custom fields in the payload.
-        def initialize(aps, custom_data = {})
+        def initialize(aps:, data: nil)
           @aps = aps
-          @custom_data = custom_data
+          @data = data
         end
       end
     end

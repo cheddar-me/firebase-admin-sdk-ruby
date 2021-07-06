@@ -73,7 +73,7 @@ module Firebase
         # @return [Time, nil]
         #   For notifications that inform users about events with an absolute time reference, sets the time that the
         #   event in the notification occurred. Notifications in the panel are sorted by this time.
-        attr_accessor :event_timestamp
+        attr_accessor :event_time
 
         # @return [Boolean, nil]
         #   Sets whether or not this notification is relevant only to the current device. Some notifications can be
@@ -88,13 +88,13 @@ module Firebase
         #   controls when the message is delivered.
         attr_accessor :priority
 
-        # @return [Array<Integer>, nil]
-        #   Sets the vibration pattern to use. Pass in an array of milliseconds to turn the vibrator on or off. The
+        # @return [Array<Numeric>, nil]
+        #   Sets the vibration pattern to use. Pass in an array of numeric durations to turn the vibrator on or off. The
         #   first value indicates the duration to wait before turning the vibrator on. The next value indicates the
         #   duration to keep the vibrator on. Subsequent values alternate between duration to turn the vibrator off and
         #   to turn the vibrator on. If `vibrate_timings` is set and `default_vibrate_timings` is set to `true`, the
         #   default value is used instead of the user-specified `vibrate_timings`.
-        attr_accessor :vibrate_timings_millis
+        attr_accessor :vibrate_timings
 
         # @return [Boolean, nil]
         #   If set to `true`, use the Android framework's default vibrate pattern for the notification. Default values
@@ -121,7 +121,6 @@ module Firebase
         # @see https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/config.xml
         attr_accessor :default_light_settings
 
-
         # @return [String, nil]
         #   Sets the visibility of the notification. Must be either `private`, `public`, or `secret`. If unspecified,
         #   defaults to `private`.
@@ -136,6 +135,33 @@ module Firebase
         # @see https://developer.android.com/training/notify-user/badges
         attr_accessor :notification_count
 
+        # Initializes an AndroidNotification
+        #
+        # @param [String, nil] title
+        # @param [String, nil] body
+        # @param [String, nil] icon
+        # @param [String, nil] color
+        # @param [String, nil] sound
+        # @param [String, nil] tag
+        # @param [String, nil] image
+        # @param [String, nil] click_action
+        # @param [String, nil] body_loc_key
+        # @param [Array<String>, nil] body_loc_args
+        # @param [String, nil] title_loc_key
+        # @param [Array<String>, nil] title_loc_args
+        # @param [String, nil] channel_id
+        # @param [String, nil] ticker
+        # @param [Boolean, nil] sticky
+        # @param [Time, nil] event_time
+        # @param [Boolean, nil] local_only
+        # @param [String, nil] priority
+        # @param [Array<Numeric>, nil] vibrate_timings
+        # @param [Boolean, nil] default_vibrate_timings
+        # @param [Boolean, nil] default_sound
+        # @param [LightSettings, nil] light_settings
+        # @param [Boolean, nil] default_light_settings
+        # @param [String, nil] visibility
+        # @param [Integer, nil] notification_count
         def initialize(
           title: nil,
           body: nil,
@@ -152,10 +178,10 @@ module Firebase
           channel_id: nil,
           ticker: nil,
           sticky: nil,
-          event_timestamp: nil,
+          event_time: nil,
           local_only: nil,
           priority: nil,
-          vibrate_timings_millis: nil,
+          vibrate_timings: nil,
           default_vibrate_timings: nil,
           default_sound: nil,
           light_settings: nil,
@@ -178,10 +204,10 @@ module Firebase
           self.channel_id = channel_id
           self.ticker = ticker
           self.sticky = sticky
-          self.event_timestamp = event_timestamp
+          self.event_time = event_time
           self.local_only = local_only
           self.priority = priority
-          self.vibrate_timings_millis = vibrate_timings_millis
+          self.vibrate_timings = vibrate_timings
           self.default_vibrate_timings = default_vibrate_timings
           self.default_sound = default_sound
           self.light_settings = light_settings

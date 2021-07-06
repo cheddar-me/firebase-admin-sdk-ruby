@@ -6,7 +6,7 @@ module Firebase
       # Refer to `APNS Documentation` for more information.
       # @see https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
       class APNSConfig
-        # @return [Hash<String, String>, nil]
+        # @return [Hash{Symbol,String => String}, nil]
         #   A collection of APNs headers. Header values must be strings.
         attr_accessor :headers
 
@@ -20,7 +20,7 @@ module Firebase
 
         # Initializes an {APNSConfig}.
         #
-        # @param [Hash<String, String>, nil] headers
+        # @param [Hash{Symbol,String => String}, nil] headers
         #   A collection of APNs headers (optional).
         #   Header keys and values must be strings.
         # @param [APNSPayload, nil] payload

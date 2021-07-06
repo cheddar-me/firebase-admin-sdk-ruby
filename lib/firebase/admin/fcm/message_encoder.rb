@@ -29,18 +29,6 @@ module Firebase
 
         private
 
-        # Remove nil values and empty collections from the specified hash.
-        # @return [Hash]
-        def remove_nil_values(hash)
-          hash.reject do |_, v|
-            if v.is_a?(Hash) || v.is_a?(Array)
-              v.empty?
-            else
-              v.nil?
-            end
-          end
-        end
-
         # @return [Hash, nil]
         def encode_android(v)
           return nil unless v
@@ -51,11 +39,11 @@ module Firebase
             notification: encode_android_notification(v.notification),
             priority: check_string("AndroidConfig.priority", v.priority, non_empty: true),
             restricted_package_name: check_string("AndroidConfig.restricted_package_name", v.restricted_package_name),
-            ttl: encode_ttl(v.ttl),
+            ttl: encode_duration("AndroidConfig.ttl", v.ttl),
             fcm_options: encode_android_fcm_options(v.fcm_options)
           }
           result = remove_nil_values(result)
-          if result.key?(:priority) && %w[normal high].exclude?(result[:priority])
+          if result.key?(:priority) && !%w[normal high].include?(result[:priority])
             raise ArgumentError, "AndroidConfig.priority must be 'normal' or 'high'"
           end
           result
@@ -84,10 +72,10 @@ module Firebase
             image: check_string("AndroidNotification.image", v.image),
             ticker: check_string("AndroidNotification.ticker", v.ticker),
             sticky: v.sticky,
-            event_time: check_time("AndroidNotification.event_timestamp", v.event_timestamp),
+            event_time: check_time("AndroidNotification.event_time", v.event_time),
             local_only: v.local_only,
             notification_priority: check_string("AndroidNotification.priority", v.priority, non_empty: true),
-            vibrate_timings: check_numeric_array("AndroidNotification.vibrate_timings_millis", v.vibrate_timings_millis),
+            vibrate_timings: check_numeric_array("AndroidNotification.vibrate_timings", v.vibrate_timings),
             default_vibrate_timings: v.default_vibrate_timings,
             default_sound: v.default_sound,
             default_light_settings: v.default_light_settings,
@@ -124,7 +112,7 @@ module Firebase
 
           if (vibrate_timings = result[:vibrate_timings])
             vibrate_timing_strings = vibrate_timings.map do |t|
-              encode_milliseconds("AndroidNotification.vibrate_timing_millis", t)
+              encode_duration("AndroidNotification.vibrate_timings", t)
             end
             result[:vibrate_timings] = vibrate_timing_strings
           end
@@ -145,19 +133,11 @@ module Firebase
         end
 
         # @return [String, nil]
-        def encode_ttl(ttl)
-          return nil unless ttl
-          ttl = check_numeric("AndroidConfig.ttl", ttl)
-          raise ArgumentError, "AndroidConfig.ttl must not be negative" if ttl < 0
-          to_seconds_string(ttl)
-        end
-
-        # @return [String, nil]
-        def encode_milliseconds(label, value)
+        def encode_duration(label, value)
           return nil unless value
-          raise ArgumentError, "#{label} must be a duration in milliseconds" unless value.is_a?(Numeric)
+          raise ArgumentError, "#{label} must be a numeric duration in seconds" unless value.is_a?(Numeric)
           raise ArgumentError, "#{label} must not be negative" if value < 0
-          to_seconds_string(value / 1000.0)
+          to_seconds_string(value)
         end
 
         # @return [Hash, nil]
@@ -166,26 +146,27 @@ module Firebase
           raise ArgumentError, "AndroidNotification.light_settings must be a LightSettings." unless v.is_a?(LightSettings)
           result = {
             color: encode_color("LightSettings.color", v.color, allow_alpha: true),
-            light_on_duration: encode_milliseconds("LightSettings.light_on_duration_millis", v.light_on_duration_millis),
-            light_off_duration: encode_milliseconds("LightSettings.light_off_duration_millis", v.light_off_duration_millis)
+            light_on_duration: encode_duration("LightSettings.light_on_duration", v.light_on_duration),
+            light_off_duration: encode_duration("LightSettings.light_off_duration", v.light_off_duration)
           }
           result = remove_nil_values(result)
           unless result.key?(:light_on_duration)
-            raise ArgumentError, "LightSettings.light_on_duration_millis is required"
+            raise ArgumentError, "LightSettings.light_on_duration is required"
           end
           unless result.key?(:light_off_duration)
-            raise ArgumentError, "LightSettings.light_off_duration_millis is required"
+            raise ArgumentError, "LightSettings.light_off_duration is required"
           end
+          result
         end
 
         # @return [Hash]
         def encode_color(label, value, allow_alpha: false)
           value = check_color(label, value, allow_alpha: allow_alpha, required: true)
           value += "FF" if value&.length == 7
-          r = value[1..3].to_i(16) / 255.0
-          g = value[3..5].to_i(16) / 255.0
-          b = value[5..7].to_i(16) / 255.0
-          a = value[7..9].to_i(16) / 255.0
+          r = value[1..2].to_i(16) / 255.0
+          g = value[3..4].to_i(16) / 255.0
+          b = value[5..6].to_i(16) / 255.0
+          a = value[7..8].to_i(16) / 255.0
           {red: r, green: g, blue: b, alpha: a}
         end
 
@@ -208,7 +189,7 @@ module Firebase
           result = {
             aps: encode_aps(payload.aps)
           }
-          payload.custom_data.each do |k, v|
+          payload.data&.each do |k, v|
             result[k] = v
           end
           remove_nil_values(result)
@@ -267,6 +248,8 @@ module Firebase
             body: check_string("APSAlert.body", alert.body),
             "title-loc-key": check_string("APSAlert.title_loc_key", alert.title_loc_key),
             "title-loc-args": check_string_array("APSAlert.title_loc_args", alert.title_loc_args),
+            "subtitle-loc-key": check_string("APSAlert.subtitle_loc_key", alert.subtitle_loc_key),
+            "subtitle-loc-args": check_string_array("APSAlert.subtitle_loc_args", alert.subtitle_loc_args),
             "loc-key": check_string("APSAlert.loc_key", alert.loc_key),
             "loc-args": check_string_array("ASPAlert.loc_args", alert.loc_args),
             "action-loc-key": check_string("APSAlert.action_loc_key", alert.action_loc_key),
@@ -278,6 +261,8 @@ module Firebase
             raise ArgumentError, "APSAlert.loc_key is required when specifying loc_args"
           elsif result.key?(:"title-loc-args") && !result.key?(:"title-loc-key")
             raise ArgumentError, "APSAlert.title_loc_key is required when specifying title_loc_args"
+          elsif result.key?(:"subtitle-loc-args") && !result.key?(:"subtitle-loc-key")
+            raise ArgumentError, "APSAlert.subtitle_loc_key is required when specifying subtitle_loc_args"
           end
 
           if (custom_data = alert.custom_data)
@@ -328,6 +313,28 @@ module Firebase
           remove_nil_values(result)
         end
 
+        # @return [Hash, nil]
+        def encode_fcm_options(options)
+          return nil unless options
+          raise ArgumentError, "Message.fcm_options must be a FCMOptions." unless options.is_a?(FCMOptions)
+          result = {
+            analytics_label: check_analytics_label("Message.fcm_options", options.analytics_label)
+          }
+          remove_nil_values(result)
+        end
+
+        # Remove nil values and empty collections from the specified hash.
+        # @return [Hash]
+        def remove_nil_values(hash)
+          hash.reject do |_, v|
+            if v.is_a?(Hash) || v.is_a?(Array)
+              v.empty?
+            else
+              v.nil?
+            end
+          end
+        end
+
         # @return [String, nil]
         def sanitize_topic_name(topic)
           return nil unless topic
@@ -339,16 +346,6 @@ module Firebase
             raise ArgumentError, "Malformed topic name."
           end
           topic
-        end
-
-        # @return [Hash, nil]
-        def encode_fcm_options(options)
-          return nil unless options
-          raise ArgumentError, "Message.fcm_options must be a FCMOptions." unless options.is_a?(FCMOptions)
-          result = {
-            analytics_label: check_analytics_label("Message.fcm_options", options.analytics_label)
-          }
-          remove_nil_values(result)
         end
 
         include Utils

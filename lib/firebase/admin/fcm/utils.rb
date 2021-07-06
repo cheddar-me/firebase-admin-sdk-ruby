@@ -2,7 +2,6 @@ module Firebase
   module Admin
     module FCM
       module Utils
-
         def check_string(label, value, non_empty: false)
           return nil unless value
           raise ArgumentError, "#{label} must be a string." unless value.is_a?(String) || non_empty

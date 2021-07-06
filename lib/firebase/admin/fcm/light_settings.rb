@@ -7,26 +7,26 @@ module Firebase
         #   Sets color of the LED in `#rrggbb` or `#rrggbbaa` format.
         attr_accessor :color
 
-        # @return [Integer]
-        #   Along with {light_off_duration_millis}, defines the blink rate of LED flashes.
-        attr_accessor :light_on_duration_millis
+        # @return [Numeric]
+        #   Along with {light_off_duration}, defines the blink rate of LED flashes.
+        attr_accessor :light_on_duration
 
-        # @return [Integer]
-        #   Along with {light_on_duration_millis}, defines the blink rate of LED flashes.
-        attr_accessor :light_off_duration_millis
+        # @return [Numeric]
+        #   Along with {light_on_duration}, defines the blink rate of LED flashes.
+        attr_accessor :light_off_duration
 
         # Initializes a {LightSettings}.
         #
         # @param [String] color
         #   The color of the LED in `#rrggbb` or `#rrggbbaa` format.
-        # @param [Integer] light_on_duration_millis
-        #   Along with {light_off_duration_millis}, defines the blink rate of LED flashes.
-        # @param [Integer] light_off_duration_millis
-        #   Along with {light_on_duration_millis}, defines the blink rate of LED flashes.
-        def initialize(color:, light_on_duration_millis:, light_off_duration_millis:)
+        # @param [Numeric] light_on_duration
+        #   Along with {light_off_duration}, defines the blink rate of LED flashes.
+        # @param [Numeric] light_off_duration
+        #   Along with {light_on_duration}, defines the blink rate of LED flashes.
+        def initialize(color:, light_on_duration:, light_off_duration:)
           self.color = color
-          self.light_on_duration_millis = light_on_duration_millis
-          self.light_off_duration_millis = light_off_duration_millis
+          self.light_on_duration = light_on_duration
+          self.light_off_duration = light_off_duration
         end
       end
     end
