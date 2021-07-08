@@ -1,0 +1,18 @@
+{
+  "error": {
+    "code": 401,
+    "message": "Auth error from APNS or Web Push Service",
+    "status": "UNAUTHENTICATED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.firebase.fcm.v1.FcmError",
+        "errorCode": "THIRD_PARTY_AUTH_ERROR"
+      },
+      {
+        "@type": "type.googleapis.com/google.firebase.fcm.v1.ApnsError",
+        "statusCode": 403,
+        "reason": "InvalidProviderToken"
+      }
+    ]
+  }
+}

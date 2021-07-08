@@ -1,0 +1,22 @@
+{
+  "error": {
+    "code": 429,
+    "message": "Message rate exceeded",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.firebase.fcm.v1.FcmError",
+        "errorCode": "QUOTA_EXCEEDED"
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.QuotaFailure",
+        "violations": [
+          {
+            "subject": "project:test-adminsdk-project",
+            "description": "Message rate exceeded"
+          }
+        ]
+      }
+    ]
+  }
+}

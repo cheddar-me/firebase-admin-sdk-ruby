@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": 403,
+    "message": "SenderId mismatch",
+    "status": "PERMISSION_DENIED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.firebase.fcm.v1.FcmError",
+        "errorCode": "SENDER_ID_MISMATCH"
+      }
+    ]
+  }
+}

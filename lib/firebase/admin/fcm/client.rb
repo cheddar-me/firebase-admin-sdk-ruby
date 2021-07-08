@@ -24,8 +24,8 @@ module Firebase
             message: @message_encoder.encode(message)
           }
           res = @http_client.post(send_url, body, FCM_HEADERS)
-          res["name"]
-        rescue Faraday::ClientError => e
+          res.body["name"]
+        rescue Faraday::Error => e
           err = parse_fcm_error(e)
           raise err || e
         end
@@ -48,12 +48,22 @@ module Firebase
         # If the `dry_run` flag is set, the message will not be actually delivered to the recipients.
         # Instead FCM performs all the usual validations, and emulates the send operation.
         #
-        # @param [MulticastMessage] message A multicast message to send.
+        # @param [MulticastMessage] multicast_message A multicast message to send.
         # @param [Boolean] dry_run A flag indicating whether to run the operation in dry run mode.
         #
         # @return [BatchResponse] A batch response.
-        def send_multicast(message, dry_run: false)
-          raise NotImplementedError
+        def send_multicast(multicast_message, dry_run: false)
+          messages = multicast_message.tokens.map do |token|
+            Message.new(
+              token: token,
+              data: multicast_message.data,
+              notification: multicast_message.notification,
+              android: multicast_message.android,
+              apns: multicast_message.apns,
+              fcm_options: multicast_message.fcm_options
+            )
+          end
+          send_all(messages, dry_run: dry_run)
         end
 
         # Subscribes a list of registration tokens to an FCM topic.
@@ -78,20 +88,24 @@ module Firebase
 
         private
 
+        # @return [String] The firebase cloud messaging send endpoint url.
         def send_url
-          "#{FCM_HOST}/projects/#{@project_id}/messages:send"
+          "#{FCM_HOST}/v1/projects/#{@project_id}/messages:send"
         end
 
         # @param [Faraday::ClientError] err
         def parse_fcm_error(err)
           msg, info = parse_platform_error(err.response_status, err.response_body)
           return err if info.empty?
+
           details = info["details"] || []
           detail = details.find { |detail| detail["@type"] == "type.googleapis.com/google.firebase.fcm.v1.FcmError" }
           return err unless detail.is_a?(Hash)
-          cls = FCM_ERROR_TYPES[detail["errorCode"] || ""]
-          return err unless cls
-          cls.new(msg)
+
+          cls = FCM_ERROR_TYPES[detail["errorCode"] || ""] || Error
+          cls.new(msg, info)
+        rescue JSON::ParserError
+          Error.new("HTTP response is not json.", err.response)
         end
 
         # Parses an HTTP error response from a Google Cloud Platform API and extracts the error code
@@ -101,15 +115,10 @@ module Firebase
         # @param [String] body
         # @return Array<String,Hash>
         def parse_platform_error(status_code, body)
-          begin
-            parsed = JSON.parse(body)
-            data = parsed if parsed.is_a?(Hash)
-          rescue JSON::JSONError
-          end
-
-          data ||= {}
-          details = data["error"] || {}
-          msg = data["message"] || "Unexpected HTTP response with status #{status_code}; body: #{body}"
+          parsed = JSON.parse(body)
+          data = parsed.is_a?(Hash) ? parsed : {}
+          details = data.fetch("error", {})
+          msg = details.fetch("message", "Unexpected HTTP response with status #{status_code}; body: #{body}")
           [msg, details]
         end
 
@@ -120,10 +129,12 @@ module Firebase
 
         FCM_ERROR_TYPES = {
           "APNS_AUTH_ERROR" => ThirdPartyAuthError,
+          "INVALID_ARGUMENT" => InvalidArgumentError,
           "QUOTA_EXCEEDED" => QuotaExceededError,
           "SENDER_ID_MISMATCH" => SenderIdMismatchError,
           "THIRD_PARTY_AUTH_ERROR" => ThirdPartyAuthError,
-          "UNREGISTERED" => UnregisteredError
+          "UNREGISTERED" => UnregisteredError,
+          "UNSPECIFIED_ERROR" => UnspecifiedError
         }
       end
     end
