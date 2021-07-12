@@ -42,8 +42,10 @@ module Firebase
         # @return [Firebase::Admin::Config]
         def from_json(json)
           data = JSON.parse(json)
-          new(project_id: data["projectId"],
-              service_account_id: data["serviceAccountId"])
+          new(
+            project_id: data["projectId"],
+            service_account_id: data["serviceAccountId"]
+          )
         end
       end
 

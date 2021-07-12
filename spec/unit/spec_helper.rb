@@ -11,6 +11,7 @@ require "active_support/core_ext/numeric/time"
 
 require_relative "helpers/auth_helper"
 require_relative "helpers/jwt_helper"
+require_relative "helpers/messaging_helper"
 
 WebMock.disallow_net_connect!
 
