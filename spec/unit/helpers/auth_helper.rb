@@ -1,5 +1,4 @@
 module AuthHelper
-
   def stub_auth_request(method, path)
     uri = "#{Firebase::Admin::Auth::ID_TOOLKIT_URL}/projects/test-adminsdk-project#{path}"
     stub_request(method, uri)
