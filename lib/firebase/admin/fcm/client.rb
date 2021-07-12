@@ -26,8 +26,7 @@ module Firebase
           res = @http_client.post(send_url, body, FCM_HEADERS)
           res.body["name"]
         rescue Faraday::Error => e
-          err = parse_fcm_error(e)
-          raise err || e
+          raise parse_fcm_error(e)
         end
 
         # Sends the given list of messages via Firebase Cloud Messaging (FCM) as a single batch.
@@ -68,22 +67,22 @@ module Firebase
 
         # Subscribes a list of registration tokens to an FCM topic.
         #
-        # @param [Array<String>] tokens An array of device registration tokens (max 1000).
+        # @param [Array<String>, String] tokens An array of device registration tokens (max 1000).
         # @param [String] topic Name of the topic to subscribe to. May contain the `/topics` prefix.
         #
         # @return [TopicManagementResponse] A topic management response.
         def subscribe_to_topic(tokens, topic)
-          raise NotImplementedError
+          make_topic_mgmt_request(tokens, topic, "batchAdd")
         end
 
         # Unsubscribes a list of registration tokens from an FCM topic.
         #
-        # @param [Array<String>] tokens An array of device registration tokens (max 1000).
+        # @param [Array<String>, String] tokens An array of device registration tokens (max 1000).
         # @param [String] topic Name of the topic to unsubscribe from. May contain the `/topics` prefix.
         #
         # @return [TopicManagementResponse] A topic management response.
         def unsubscribe_from_topic(tokens, topic)
-          raise NotImplementedError
+          make_topic_mgmt_request(tokens, topic, "batchRemove")
         end
 
         private
@@ -93,7 +92,39 @@ module Firebase
           "#{FCM_HOST}/v1/projects/#{@project_id}/messages:send"
         end
 
-        # @param [Faraday::ClientError] err
+        # @return [String] The topic management endpoint url.
+        def topic_mgmt_url(operation)
+          "#{IID_HOST}/iid/v1:#{operation}"
+        end
+
+        def make_topic_mgmt_request(tokens, topic, operation)
+          tokens = [tokens] if tokens.is_a?(String)
+
+          unless tokens.is_a?(Array) && !tokens.empty?
+            raise ArgumentError, "tokens must be a string or non-empty array of strings."
+          end
+
+          unless tokens.all?(String)
+            raise ArgumentError, "tokens must be a non-empty array of strings."
+          end
+
+          unless topic.is_a?(String) && !topic.empty?
+            raise ArgumentError, "topic must be a non-empty string."
+          end
+
+          unless %w[batchAdd batchRemove].include?(operation)
+            raise ArgumentError, "operation is invalid"
+          end
+
+          uri = topic_mgmt_url(operation)
+          res = @http_client.post(uri, {
+            to: @message_encoder.sanitize_topic_name(topic, strip_prefix: false),
+            registration_tokens: tokens
+          }, IID_HEADERS)
+          TopicManagementResponse.new(res)
+        end
+
+        # @param [Faraday::Error] err
         def parse_fcm_error(err)
           msg, info = parse_platform_error(err.response_status, err.response_body)
           return err if info.empty?
@@ -125,7 +156,7 @@ module Firebase
         FCM_HOST = "https://fcm.googleapis.com"
         FCM_HEADERS = {"X-GOOG-API-FORMAT-VERSION": "2"}
         IID_HOST = "https://iid.googleapis.com"
-        IID_HEADERS = {access_token_auth: "true"}
+        IID_HEADERS = {"access_token_auth" => "true"}
 
         FCM_ERROR_TYPES = {
           "APNS_AUTH_ERROR" => ThirdPartyAuthError,

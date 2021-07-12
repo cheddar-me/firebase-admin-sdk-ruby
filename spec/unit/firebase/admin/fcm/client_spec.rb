@@ -164,6 +164,30 @@ describe Firebase::Admin::FCM::Client do
       end
     end
   end
-end
 
-# token = "doU7Ly4sa0EVl8jrKXSehg:APA91bHthRDA6cXItskR2l761ty0aO93f_0bezPU9UNrQbkVibzIceW0LzaA90Z-ki8fmkUE4nKMUyKIeajYRafc54V6JBhOOlbYOm86o47b4hk4qR1Z0TQJWQk7lPUMhON4eHOueL5h"
+  describe "#subscribe_to_topic" do
+    it "should return a topic management response" do
+      stub_topic_request("batchAdd", "fcm/subscribe.json")
+      tokens = %w[token not-found-token]
+      response = @app.fcm.subscribe_to_topic(tokens, "test-topic")
+      expect(response).to be_a(Firebase::Admin::FCM::TopicManagementResponse)
+      expect(response.success_count).to eq(1)
+      expect(response.errors.length).to eq(1)
+      expect(response.errors[0].index).to eq(1)
+      expect(response.errors[0].reason).to eq("NOT_FOUND")
+    end
+  end
+
+  describe "#unsubscribe_from_topic" do
+    it "should return a topic management response" do
+      stub_topic_request("batchRemove", "fcm/subscribe.json")
+      tokens = %w[token not-found-token]
+      response = @app.fcm.unsubscribe_from_topic(tokens, "test-topic")
+      expect(response).to be_a(Firebase::Admin::FCM::TopicManagementResponse)
+      expect(response.success_count).to eq(1)
+      expect(response.errors.length).to eq(1)
+      expect(response.errors[0].index).to eq(1)
+      expect(response.errors[0].reason).to eq("NOT_FOUND")
+    end
+  end
+end

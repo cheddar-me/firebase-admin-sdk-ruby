@@ -27,6 +27,19 @@ module Firebase
           result
         end
 
+        # @return [String, nil]
+        def sanitize_topic_name(topic, strip_prefix: true)
+          return nil unless topic
+          prefix = "/topics/"
+          if topic.start_with?(prefix)
+            topic = topic[prefix.length..]
+          end
+          unless /\A[a-zA-Z0-9\-_.~%]+\Z/.match?(topic)
+            raise ArgumentError, "Malformed topic name."
+          end
+          strip_prefix ? topic : "/topics/#{topic}"
+        end
+
         private
 
         # @return [Hash, nil]
@@ -333,19 +346,6 @@ module Firebase
               v.nil?
             end
           end
-        end
-
-        # @return [String, nil]
-        def sanitize_topic_name(topic)
-          return nil unless topic
-          prefix = "/topics/"
-          if topic.start_with?(prefix)
-            topic = topic[prefix.length..]
-          end
-          unless /\A[a-zA-Z0-9\-_.~%]+\Z/.match?(topic)
-            raise ArgumentError, "Malformed topic name."
-          end
-          topic
         end
 
         include Utils

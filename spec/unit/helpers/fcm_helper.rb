@@ -9,4 +9,14 @@ module FCMHelper
       }.merge(response_hashes)
     )
   end
+
+  def stub_topic_request(operation, file)
+    stub_request(:post, "https://iid.googleapis.com/iid/v1:#{operation}").to_return(
+      {
+        status: 200,
+        body: fixture(file),
+        headers: {content_type: "application/json; charset=utf-8"}
+      }
+    )
+  end
 end
