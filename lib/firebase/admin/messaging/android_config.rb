@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Android-specific options that can be included in a {Message}.
       class AndroidConfig
         # @return [String, nil]

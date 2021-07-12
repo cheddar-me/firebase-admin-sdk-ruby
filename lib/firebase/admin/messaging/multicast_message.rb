@@ -1,11 +1,11 @@
 module Firebase
   module Admin
-    module FCM
-      # A message that can be sent via Firebase Cloud Messaging.
+    module Messaging
+      # A multicast message that can be sent via Firebase Cloud Messaging.
       #
       # Contains payload information as well as recipient information. In particular, the message must contain exactly
       # one of token, topic or condition fields.
-      class Message
+      class MulticastMessage
         # @return [Hash<String, String>, nil]
         #   A hash of data fields (optional). All keys and values must be strings.
         attr_accessor :data
@@ -26,18 +26,9 @@ module Firebase
         #   An {FCMOptions} (optional).
         attr_accessor :fcm_options
 
-        # @return [String, nil]
+        # @return [Array<String>, nil]
         #   Registration token of the device to which the message should be sent (optional).
-        attr_accessor :token
-
-        # @return [String, nil]
-        #   Name of the FCM topic to which the message should be sent (optional). Topic name may contain the `/topics/`
-        #   prefix.
-        attr_accessor :topic
-
-        # @return [String, nil]
-        #   The FCM condition to which the message should be sent (optional).
-        attr_accessor :condition
+        attr_accessor :tokens
 
         # Initializes a {Message}.
         #
@@ -51,29 +42,22 @@ module Firebase
         #   An {APNSConfig} (optional).
         # @param [FCMOptions, nil] fcm_options
         #   An {FCMOptions} (optional).
-        # @param [String, nil] token
+        # @param [Array<String>, nil] tokens
         #   A registration token of the device to send the message to (optional).
-        # @param [String, nil] topic
-        #   The name of the FCM topic to send the message to (optional).
-        #   The topic name may contain the `/topics/` prefix.
-        # @param [String, nil] condition
-        #   The FCM condition to which the message should be sent (optional).
         def initialize(
           data: nil,
           notification: nil,
           android: nil,
           apns: nil,
           fcm_options: nil,
-          token: nil,
-          topic: nil,
-          condition: nil
+          tokens: nil
         )
           self.data = data
           self.notification = notification
           self.android = android
           self.apns = apns
           self.fcm_options = fcm_options
-          self.token = token
+          self.tokens = tokens
           self.topic = topic
           self.condition = condition
         end

@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Options for features provided by the FCM SDK for iOS.
       class APNSFCMOptions
         # @return [String, nil]

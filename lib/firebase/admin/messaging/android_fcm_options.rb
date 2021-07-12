@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Represents options for features provided by the FCM SDK for Android.
       class AndroidFCMOptions
         # @return [String, nil] Label associated with the message's analytics data.

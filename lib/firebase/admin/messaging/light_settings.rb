@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Represents settings to control notification LED that can be included in an {AndroidNotification}.
       class LightSettings
         # @return [String]

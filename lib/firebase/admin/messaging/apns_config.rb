@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # APNS-specific options that can be included in a {Message}.
       #
       # Refer to `APNS Documentation` for more information.

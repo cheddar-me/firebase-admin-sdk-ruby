@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Represents the payload of an APNs message.
       #
       # Mainly consists of the `aps` dictionary. But may also contain other arbitrary custom keys.

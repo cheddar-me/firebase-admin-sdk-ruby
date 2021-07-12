@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # An alert that can be included in an {APS}.
       class APSAlert
         # @return [String, nil]

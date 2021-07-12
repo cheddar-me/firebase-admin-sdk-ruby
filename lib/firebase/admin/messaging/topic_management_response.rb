@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # A response received from a topic management operation.
       class TopicManagementResponse
         # @return [Integer] The number of tokens successfully subscribed or unsubscribed.

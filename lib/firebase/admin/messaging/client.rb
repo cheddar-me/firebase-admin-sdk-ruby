@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # A client for communicating with the Firebase Cloud Messaging service.
       class Client
         def initialize(app)
@@ -172,9 +172,9 @@ module Firebase
 
     class App
       # Gets the Firebase Cloud Messaging client for this App.
-      # @return [Firebase::Admin::FCM::Client]
-      def fcm
-        @fcm_client ||= FCM::Client.new(self)
+      # @return [Firebase::Admin::Messaging::Client]
+      def messaging
+        @messaging_client ||= Messaging::Client.new(self)
       end
     end
   end

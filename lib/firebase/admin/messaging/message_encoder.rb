@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       class MessageEncoder
         # Encodes a {Message}.
         #

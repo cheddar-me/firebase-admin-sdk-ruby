@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Information on an error encountered when performing a topic management operation.
       class ErrorInfo
         # @return [Integer] The index of the registration token the error is related to.

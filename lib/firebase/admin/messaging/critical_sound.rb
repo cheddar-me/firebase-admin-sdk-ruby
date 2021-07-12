@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Critical alert sound configuration that can be included in an {APS}
       class CriticalSound
         # @return [String]

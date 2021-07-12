@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # A notification that can be included in a message.
       class Notification
         # @return [String, nil]

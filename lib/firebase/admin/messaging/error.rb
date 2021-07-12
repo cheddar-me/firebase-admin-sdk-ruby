@@ -1,7 +1,7 @@
 module Firebase
   module Admin
-    module FCM
-      # A base class for errors raised by the admin sdk fcm client.
+    module Messaging
+      # A base class for errors raised by the admin sdk messaging client.
       class Error < Firebase::Admin::Error
         attr_reader :info
 

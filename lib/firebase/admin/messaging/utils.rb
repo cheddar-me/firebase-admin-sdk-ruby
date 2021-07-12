@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       module Utils
         def check_string(label, value, non_empty: false)
           return nil unless value
@@ -17,8 +17,9 @@ module Firebase
         end
 
         def check_string_hash(label, value)
-          return nil if value.nil? || (value.is_a?(Hash) && value.empty?)
+          return nil if value.nil?
           raise ArgumentError, "#{label} must be a hash." unless value.is_a?(Hash)
+          return nil if value.empty?
           raise ArgumentError, "#{label} must not contain non-string values" unless value.values.all?(String)
           unless value.keys.all? { |k| k.is_a?(String) || k.is_a?(Symbol) }
             raise ArgumentError, "#{label} must not contain non-string or non-symbol values"
@@ -27,15 +28,17 @@ module Firebase
         end
 
         def check_string_array(label, value)
-          return nil if value.nil? || (value.is_a?(Array) && value.empty?)
+          return nil if value.nil?
           raise ArgumentError, "#{label} must be an array of strings." unless value.is_a?(Array)
+          return nil if value.empty?
           raise ArgumentError, "#{label} must not contain non-string values" unless value.all?(String)
           value
         end
 
         def check_numeric_array(label, value)
-          return nil if value.nil? || (value.is_a?(Array) && value.empty?)
+          return nil if value.nil?
           raise ArgumentError, "#{label} must be an array of numbers." unless value.is_a?(Array)
+          return nil if value.empty?
           raise ArgumentError, "#{label} must not contain non-numeric values" unless value.all?(Numeric)
           value
         end

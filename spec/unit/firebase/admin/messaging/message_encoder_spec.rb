@@ -1,38 +1,38 @@
 require_relative "../../../spec_helper"
 
-describe Firebase::Admin::FCM::MessageEncoder do
+describe Firebase::Admin::Messaging::MessageEncoder do
   describe "#encode" do
-    let(:encoder) { Firebase::Admin::FCM::MessageEncoder.new }
+    let(:encoder) { Firebase::Admin::Messaging::MessageEncoder.new }
 
     it "encodes an empty Message" do
-      m = Firebase::Admin::FCM::Message.new(token: "token")
+      m = Firebase::Admin::Messaging::Message.new(token: "token")
       expect(encoder.encode(m)).to eq({token: "token"})
-      m = Firebase::Admin::FCM::Message.new(topic: "/topics/test")
+      m = Firebase::Admin::Messaging::Message.new(topic: "/topics/test")
       expect(encoder.encode(m)).to eq({topic: "test"})
-      m = Firebase::Admin::FCM::Message.new(condition: "test")
+      m = Firebase::Admin::Messaging::Message.new(condition: "test")
       expect(encoder.encode(m)).to eq({condition: "test"})
     end
 
     it "encodes a Message with an AndroidConfig" do
-      m = Firebase::Admin::FCM::Message.new(android: android, token: "test")
+      m = Firebase::Admin::Messaging::Message.new(android: android, token: "test")
       exp = {android: encoded_android, token: "test"}
       expect(encoder.encode(m)).to eq(exp)
     end
 
     it "encodes a Message with an APNSConfig" do
-      m = Firebase::Admin::FCM::Message.new(apns: apns, token: "test")
+      m = Firebase::Admin::Messaging::Message.new(apns: apns, token: "test")
       exp = {apns: encoded_apns, token: "test"}
       expect(encoder.encode(m)).to eq(exp)
     end
 
     it "encodes a Message with a Notification" do
-      m = Firebase::Admin::FCM::Message.new(notification: notification, token: "test")
+      m = Firebase::Admin::Messaging::Message.new(notification: notification, token: "test")
       exp = {notification: encoded_notification, token: "test"}
       expect(encoder.encode(m)).to eq(exp)
     end
 
     it "raises an ArgumentError unless exactly one token, topic or condition is specified" do
-      m = Firebase::Admin::FCM::Message.new
+      m = Firebase::Admin::Messaging::Message.new
       expect { encoder.encode(m) }.to raise_error(Firebase::Admin::ArgumentError)
       m.token = "token"
       m.topic = "/topics/topic"
@@ -40,7 +40,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     end
 
     let(:android_notification) {
-      Firebase::Admin::FCM::AndroidNotification.new(
+      Firebase::Admin::Messaging::AndroidNotification.new(
         title: "title",
         body: "body",
         icon: "icon",
@@ -100,7 +100,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:light_settings) {
-      Firebase::Admin::FCM::LightSettings.new(
+      Firebase::Admin::Messaging::LightSettings.new(
         color: "#331122ff",
         light_on_duration: 0.1,
         light_off_duration: 0.1
@@ -121,7 +121,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:android_fcm_options) {
-      Firebase::Admin::FCM::AndroidFCMOptions.new(analytics_label: "android_analytics_label")
+      Firebase::Admin::Messaging::AndroidFCMOptions.new(analytics_label: "android_analytics_label")
     }
 
     let(:encoded_android_fcm_options) {
@@ -131,7 +131,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:android) {
-      Firebase::Admin::FCM::AndroidConfig.new(
+      Firebase::Admin::Messaging::AndroidConfig.new(
         collapse_key: "collapse_key",
         priority: "high",
         ttl: 1.5,
@@ -159,7 +159,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:apns) {
-      Firebase::Admin::FCM::APNSConfig.new(
+      Firebase::Admin::Messaging::APNSConfig.new(
         headers: {"apns-priority": "10"},
         payload: apns_payload,
         fcm_options: apns_fcm_options
@@ -175,7 +175,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:apns_payload) {
-      Firebase::Admin::FCM::APNSPayload.new(
+      Firebase::Admin::Messaging::APNSPayload.new(
         aps: aps,
         data: {
           foo: "bar"
@@ -191,7 +191,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:aps) {
-      Firebase::Admin::FCM::APS.new(
+      Firebase::Admin::Messaging::APS.new(
         alert: aps_alert,
         badge: 5,
         sound: critical_sound,
@@ -219,7 +219,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:aps_alert) {
-      Firebase::Admin::FCM::APSAlert.new(
+      Firebase::Admin::Messaging::APSAlert.new(
         title: "title",
         subtitle: "subtitle",
         body: "body",
@@ -255,7 +255,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:critical_sound) {
-      Firebase::Admin::FCM::CriticalSound.new(
+      Firebase::Admin::Messaging::CriticalSound.new(
         name: "sound",
         critical: true,
         volume: 0.75
@@ -271,7 +271,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:apns_fcm_options) {
-      Firebase::Admin::FCM::APNSFCMOptions.new(
+      Firebase::Admin::Messaging::APNSFCMOptions.new(
         analytics_label: "analytics-label",
         image: "image"
       )
@@ -285,7 +285,7 @@ describe Firebase::Admin::FCM::MessageEncoder do
     }
 
     let(:notification) {
-      Firebase::Admin::FCM::Notification.new(
+      Firebase::Admin::Messaging::Notification.new(
         title: "title",
         body: "body",
         image: "image"

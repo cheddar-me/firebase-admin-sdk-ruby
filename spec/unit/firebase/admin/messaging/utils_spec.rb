@@ -1,7 +1,7 @@
 require_relative "../../../spec_helper"
 
-describe Firebase::Admin::FCM::Utils do
-  include Firebase::Admin::FCM::Utils
+describe Firebase::Admin::Messaging::Utils do
+  include Firebase::Admin::Messaging::Utils
 
   describe "#check_string" do
     it "should return the value" do

@@ -1,6 +1,6 @@
 module Firebase
   module Admin
-    module FCM
+    module Messaging
       # Aps dictionary to be included in an APNS payload.
       class APS
         # @return [APSAlert, String, nil]
