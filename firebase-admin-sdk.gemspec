@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.bindir = "bin"
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "googleauth", "~> 0.16"
+  spec.add_runtime_dependency "googleauth", "> 0.16", "< 2.0"
   spec.add_runtime_dependency "faraday", "< 2"
   spec.add_runtime_dependency "faraday_middleware", "~> 1.0"
   spec.add_runtime_dependency "jwt", ">= 1.5", "< 3.0"
