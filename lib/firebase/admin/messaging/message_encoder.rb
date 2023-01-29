@@ -1,3 +1,5 @@
+require "json"
+
 module Firebase
   module Admin
     module Messaging
@@ -6,7 +8,7 @@ module Firebase
         #
         # @param [Message] message
         #   The message to encode.
-        # @return [Hash]
+        # @return [String] A json encoded string.
         def encode(message)
           raise ArgumentError, "message must be a Message" unless message.is_a?(Message)
           result = {
@@ -17,7 +19,7 @@ module Firebase
             notification: encode_notification(message.notification),
             token: check_string("Message.token", message.token, non_empty: true),
             topic: check_string("Message.topic", message.topic, non_empty: true),
-            fcm_options: encode_fcm_options(message.fcm_options)
+            fcmOptions: encode_fcm_options(message.fcm_options)
           }
           result[:topic] = sanitize_topic_name(result[:topic])
           result = remove_nil_values(result)
@@ -47,13 +49,13 @@ module Firebase
           return nil unless v
           raise ArgumentError, "Message.android must be an AndroidConfig." unless v.is_a?(AndroidConfig)
           result = {
-            collapse_key: check_string("AndroidConfig.collapse_key", v.collapse_key),
+            collapseKey: check_string("AndroidConfig.collapse_key", v.collapse_key),
             data: check_string_hash("AndroidConfig.data", v.data),
             notification: encode_android_notification(v.notification),
             priority: check_string("AndroidConfig.priority", v.priority, non_empty: true),
-            restricted_package_name: check_string("AndroidConfig.restricted_package_name", v.restricted_package_name),
+            restrictedPackageName: check_string("AndroidConfig.restricted_package_name", v.restricted_package_name),
             ttl: encode_duration("AndroidConfig.ttl", v.ttl),
-            fcm_options: encode_android_fcm_options(v.fcm_options)
+            fcmOptions: encode_android_fcm_options(v.fcm_options)
           }
           result = remove_nil_values(result)
           if result.key?(:priority) && !%w[normal high].include?(result[:priority])
@@ -71,49 +73,49 @@ module Firebase
 
           result = {
             body: check_string("AndroidNotification.body", v.body),
-            body_loc_key: check_string("AndroidNotification.body_loc_key", v.body_loc_key),
-            body_loc_args: check_string_array("AndroidNotification.body_loc_args", v.body_loc_args),
-            click_action: check_string("AndroidNotification.click_action", v.click_action),
+            bodyLocKey: check_string("AndroidNotification.body_loc_key", v.body_loc_key),
+            bodyLocArgs: check_string_array("AndroidNotification.body_loc_args", v.body_loc_args),
+            clickAction: check_string("AndroidNotification.click_action", v.click_action),
             color: check_color("AndroidNotification.color", v.color, allow_alpha: true, required: false),
             icon: check_string("AndroidNotification.icon", v.icon),
             sound: check_string("AndroidNotification.sound", v.sound),
             tag: check_string("AndroidNotification.tag", v.tag),
             title: check_string("AndroidNotification.title", v.title),
-            title_loc_key: check_string("AndroidNotification.title_loc_key", v.title_loc_key),
-            title_loc_args: check_string_array("AndroidNotification.title_loc_args", v.title_loc_args),
-            channel_id: check_string("AndroidNotification.channel_id", v.channel_id),
+            titleLocKey: check_string("AndroidNotification.title_loc_key", v.title_loc_key),
+            titleLocArgs: check_string_array("AndroidNotification.title_loc_args", v.title_loc_args),
+            channelId: check_string("AndroidNotification.channel_id", v.channel_id),
             image: check_string("AndroidNotification.image", v.image),
             ticker: check_string("AndroidNotification.ticker", v.ticker),
             sticky: v.sticky,
-            event_time: check_time("AndroidNotification.event_time", v.event_time),
-            local_only: v.local_only,
-            notification_priority: check_string("AndroidNotification.priority", v.priority, non_empty: true),
-            vibrate_timings: check_numeric_array("AndroidNotification.vibrate_timings", v.vibrate_timings),
-            default_vibrate_timings: v.default_vibrate_timings,
-            default_sound: v.default_sound,
-            default_light_settings: v.default_light_settings,
-            light_settings: encode_light_settings(v.light_settings),
+            eventTime: check_time("AndroidNotification.event_time", v.event_time),
+            localOnly: v.local_only,
+            notificationPriority: check_string("AndroidNotification.priority", v.priority, non_empty: true),
+            vibrateTimings: check_numeric_array("AndroidNotification.vibrate_timings", v.vibrate_timings),
+            defaultVibrateTimings: v.default_vibrate_timings,
+            defaultSound: v.default_sound,
+            defaultLightSettings: v.default_light_settings,
+            lightSettings: encode_light_settings(v.light_settings),
             visibility: check_string("AndroidNotification.visibility", v.visibility, non_empty: true),
-            notification_count: check_numeric("AndroidNotification.notification_count", v.notification_count)
+            notificationCount: check_numeric("AndroidNotification.notification_count", v.notification_count)
           }
           result = remove_nil_values(result)
 
-          if result.key?(:body_loc_args) && !result.key?(:body_loc_key)
+          if result.key?(:bodyLocArgs) && !result.key?(:bodyLocKey)
             raise ArgumentError, "AndroidNotification.body_loc_key is required when specifying body_loc_args"
-          elsif result.key?(:title_loc_args) && !result.key?(:title_loc_key)
+          elsif result.key?(:titleLocArgs) && !result.key?(:titleLocKey)
             raise ArgumentError, "AndroidNotification.title_loc_key is required when specifying title_loc_args"
           end
 
-          if (event_time = result[:event_time])
-            event_time = event_time.dup.utc unless event_time.utc?
-            result[:event_time] = event_time.strftime("%Y-%m-%dT%H:%M:%S.%6NZ")
+          if (event_time = result[:eventTime])
+            event_time = event_time.getutc unless event_time.utc?
+            result[:eventTime] = event_time.strftime("%Y-%m-%dT%H:%M:%S.%6NZ")
           end
 
-          if (priority = result[:notification_priority])
+          if (priority = result[:notificationPriority])
             unless %w[min low default high max].include?(priority)
               raise ArgumentError, "AndroidNotification.priority must be 'default', 'min', 'low', 'high' or 'max'."
             end
-            result[:notification_priority] = "PRIORITY_#{priority.upcase}"
+            result[:notificationPriority] = "PRIORITY_#{priority.upcase}"
           end
 
           if (visibility = result[:visibility])
@@ -123,11 +125,11 @@ module Firebase
             result[:visibility] = visibility.upcase
           end
 
-          if (vibrate_timings = result[:vibrate_timings])
+          if (vibrate_timings = result[:vibrateTimings])
             vibrate_timing_strings = vibrate_timings.map do |t|
               encode_duration("AndroidNotification.vibrate_timings", t)
             end
-            result[:vibrate_timings] = vibrate_timing_strings
+            result[:vibrateTimings] = vibrate_timing_strings
           end
 
           result
@@ -140,7 +142,7 @@ module Firebase
             raise ArgumentError, "AndroidConfig.fcm_options must be an AndroidFCMOptions"
           end
           result = {
-            analytics_label: check_analytics_label("AndroidFCMOptions.analytics_label", v.analytics_label)
+            analyticsLabel: check_analytics_label("AndroidFCMOptions.analytics_label", v.analytics_label)
           }
           remove_nil_values(result)
         end
@@ -159,14 +161,14 @@ module Firebase
           raise ArgumentError, "AndroidNotification.light_settings must be a LightSettings." unless v.is_a?(LightSettings)
           result = {
             color: encode_color("LightSettings.color", v.color, allow_alpha: true),
-            light_on_duration: encode_duration("LightSettings.light_on_duration", v.light_on_duration),
-            light_off_duration: encode_duration("LightSettings.light_off_duration", v.light_off_duration)
+            lightOnDuration: encode_duration("LightSettings.light_on_duration", v.light_on_duration),
+            lightOffDuration: encode_duration("LightSettings.light_off_duration", v.light_off_duration)
           }
           result = remove_nil_values(result)
-          unless result.key?(:light_on_duration)
+          unless result.key?(:lightOnDuration)
             raise ArgumentError, "LightSettings.light_on_duration is required"
           end
-          unless result.key?(:light_off_duration)
+          unless result.key?(:lightOffDuration)
             raise ArgumentError, "LightSettings.light_off_duration is required"
           end
           result
@@ -190,7 +192,7 @@ module Firebase
           result = {
             headers: check_string_hash("APNSConfig.headers", apns.headers),
             payload: encode_apns_payload(apns.payload),
-            fcm_options: encode_apns_fcm_options(apns.fcm_options)
+            fcmOptions: encode_apns_fcm_options(apns.fcm_options)
           }
           remove_nil_values(result)
         end
@@ -213,7 +215,7 @@ module Firebase
           return nil unless options
           raise ArgumentError, "APNSConfig.fcm_options must be an APNSFCMOptions" unless options.is_a?(APNSFCMOptions)
           result = {
-            analytics_label: check_analytics_label("APNSFCMOptions.analytics_label", options.analytics_label),
+            analyticsLabel: check_analytics_label("APNSFCMOptions.analytics_label", options.analytics_label),
             image: check_string("APNSFCMOptions.image", options.image)
           }
           remove_nil_values(result)
@@ -331,7 +333,7 @@ module Firebase
           return nil unless options
           raise ArgumentError, "Message.fcm_options must be a FCMOptions." unless options.is_a?(FCMOptions)
           result = {
-            analytics_label: check_analytics_label("Message.fcm_options", options.analytics_label)
+            analyticsLabel: check_analytics_label("Message.fcm_options", options.analytics_label)
           }
           remove_nil_values(result)
         end

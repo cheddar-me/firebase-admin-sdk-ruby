@@ -1,3 +1,5 @@
+require "google-apis-fcm_v1"
+
 module Firebase
   module Admin
     module Messaging
@@ -5,8 +7,10 @@ module Firebase
       class Client
         def initialize(app)
           @project_id = app.project_id
-          @http_client = Firebase::Admin::Internal::HTTPClient.new(credentials: app.credentials)
           @message_encoder = MessageEncoder.new
+          @http_client = Firebase::Admin::Internal::HTTPClient.new(credentials: app.credentials)
+          @service = Google::Apis::FcmV1::FirebaseCloudMessagingService.new
+          @service.authorization = app.credentials.credentials
         end
 
         # Sends a message via Firebase Cloud Messaging (FCM).
@@ -19,13 +23,10 @@ module Firebase
         #
         # @return [String] A message id that uniquely identifies the message.
         def send_one(message, dry_run: false)
-          body = {
-            validate_only: dry_run,
-            message: @message_encoder.encode(message)
-          }
-          res = @http_client.post(send_url, body, FCM_HEADERS)
-          res.body["name"]
-        rescue Faraday::Error => e
+          body = encode_message(message, dry_run: dry_run)
+          res = @service.send_message(@project_id, body, options: {skip_serialization: true})
+          res.name
+        rescue Google::Apis::Error => e
           raise parse_fcm_error(e)
         end
 
@@ -39,7 +40,21 @@ module Firebase
         #
         # @return [BatchResponse] A batch response.
         def send_all(messages, dry_run: false)
-          raise NotImplementedError
+          raise "messages must be an Array" unless messages.is_a?(Array)
+          raise "messages must not contain more than 500 elements" unless messages.length < 500
+
+          responses = []
+          @service.batch do |service|
+            options = {skip_serialization: true}
+            messages.each do |message|
+              body = encode_message(message, dry_run: dry_run)
+              service.send_message(@project_id, body, options: options) do |res, err|
+                wrapped_err = parse_fcm_error(err) unless err.nil?
+                responses << SendResponse.new(message_id: res&.name, error: wrapped_err)
+              end
+            end
+          end
+          BatchResponse.new(responses: responses)
         end
 
         # Sends the given multicast message to all tokens via Firebase Cloud Messaging (FCM).
@@ -124,9 +139,9 @@ module Firebase
           TopicManagementResponse.new(res)
         end
 
-        # @param [Faraday::Error] err
+        # @param [Google::Apis::Error] err
         def parse_fcm_error(err)
-          msg, info = parse_platform_error(err.response_status, err.response_body)
+          msg, info = parse_platform_error(err.status_code, err.body)
           return err if info.empty?
 
           details = info["details"] || []
@@ -153,10 +168,19 @@ module Firebase
           [msg, details]
         end
 
+        # Encodes a send message request.
+        def encode_message(message, dry_run:)
+          body = {
+            message: @message_encoder.encode(message),
+            validateOnly: dry_run
+          }
+          JSON.generate(body)
+        end
+
         FCM_HOST = "https://fcm.googleapis.com"
         FCM_HEADERS = {"X-GOOG-API-FORMAT-VERSION": "2"}
         IID_HOST = "https://iid.googleapis.com"
-        IID_HEADERS = {"access_token_auth" => "true"}
+        IID_HEADERS = {"access_token_auth": "true"}
 
         FCM_ERROR_TYPES = {
           "APNS_AUTH_ERROR" => ThirdPartyAuthError,
