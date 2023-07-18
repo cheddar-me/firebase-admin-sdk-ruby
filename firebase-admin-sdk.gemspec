@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "webmock", "~> 3.13"
-  spec.add_development_dependency "fakefs", "~> 1.3.2"
+  spec.add_development_dependency "fakefs"
   spec.add_development_dependency "climate_control"
   spec.add_development_dependency "standard"
   spec.add_development_dependency "activesupport"
