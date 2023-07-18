@@ -1,6 +1,8 @@
 require_relative "../../spec_helper"
 
 describe Firebase::Admin::Config do
+  include FakeFS::SpecHelpers
+
   let(:config_file) { fixture("config.json") }
 
   it "should load from a file path" do
