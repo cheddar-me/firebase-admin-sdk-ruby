@@ -2,7 +2,6 @@ require_relative "../../../spec_helper"
 
 describe Firebase::Admin::Auth::Client do
   include AuthHelper
-  include FakeFS::SpecHelpers
 
   before do
     creds = FakeCredentials.from_file(fixture("credentials.json"))

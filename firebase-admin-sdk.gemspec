@@ -26,9 +26,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "faraday_middleware"
   spec.add_runtime_dependency "jwt", ">= 1.5", "< 3.0"
 
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "webmock", "~> 3.13"
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "webmock"
   spec.add_development_dependency "fakefs"
   spec.add_development_dependency "climate_control"
   spec.add_development_dependency "standard"
