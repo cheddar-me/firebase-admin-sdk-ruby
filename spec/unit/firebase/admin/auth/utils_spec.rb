@@ -2,6 +2,7 @@ require_relative "../../../spec_helper"
 
 describe Firebase::Admin::Auth::Utils do
   include Firebase::Admin::Auth::Utils
+  include FakeFS::SpecHelpers
 
   describe "#validate_uid" do
     it "should return the value if the argument is valid" do
