@@ -64,13 +64,13 @@ module Firebase
 
         # TODO: extract it as a separate gem? or at least rewrite it.
         # Middleware for applying credentials to authenticate requests.
-        #class CredentialsMiddleware < Faraday::Middleware
+        # class CredentialsMiddleware < Faraday::Middleware
         #  def on_request(env)
         #    creds = options[:credentials]
         #    creds.apply!(env[:request_headers])
         #  end
-        #end
-        #private_constant :CredentialsMiddleware
+        # end
+        # private_constant :CredentialsMiddleware
       end
     end
   end
