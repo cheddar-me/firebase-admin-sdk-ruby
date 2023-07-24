@@ -35,7 +35,7 @@ module Firebase
         end
 
         def post(url = nil, params = nil, headers = nil)
-          connection.post(url, params, headers)
+          connection.post(url, params.to_json, headers)
         end
 
         def patch(url = nil, params = nil, headers = nil)
