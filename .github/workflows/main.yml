@@ -21,15 +21,7 @@ jobs:
       - name: Run unit tests
         run: bundle exec rake spec
 
-      - name: Cache firebase tools
-        uses: actions/cache@v2
-        id: cache-firebase
-        with:
-          path: tools/firebase
-          key: ${{ runner.os }}-firebase-tools
-
       - name: Install firebase tools
-        if: steps.cache-firebase.outputs.cache-hit != 'true'
         run: |
           mkdir -p tools
           curl -o tools/firebase -L https://firebase.tools/bin/linux/latest
