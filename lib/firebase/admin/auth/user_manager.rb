@@ -41,7 +41,7 @@ module Firebase
             password: validate_password(password),
             emailVerified: to_boolean(email_verified),
             disabled: to_boolean(disabled)
-          }.compact
+          }.compact.to_json
           res = @client.post(with_path("accounts"), payload).body
           uid = res&.fetch("localId")
           raise CreateUserError, "failed to create user #{res}" if uid.nil?
