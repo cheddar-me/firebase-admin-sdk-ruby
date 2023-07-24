@@ -1,4 +1,5 @@
 require "faraday"
+require_relative "../middleware/request/credentials"
 
 module Firebase
   module Admin
@@ -54,23 +55,13 @@ module Firebase
           }
 
           @connection ||= Faraday::Connection.new(@uri, options) do |c|
-            # c.use CredentialsMiddleware, credentials: @credentials unless @credentials.nil?
+            c.request :credentials, credentials: @credentials unless @credentials.nil?
             c.request :url_encoded
             c.response :json
             c.response :raise_error
             c.adapter(Faraday.default_adapter)
           end
         end
-
-        # TODO: extract it as a separate gem? or at least rewrite it.
-        # Middleware for applying credentials to authenticate requests.
-        # class CredentialsMiddleware < Faraday::Middleware
-        #  def on_request(env)
-        #    creds = options[:credentials]
-        #    creds.apply!(env[:request_headers])
-        #  end
-        # end
-        # private_constant :CredentialsMiddleware
       end
     end
   end
