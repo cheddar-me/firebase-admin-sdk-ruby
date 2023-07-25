@@ -6,7 +6,7 @@ in Ruby.
 For more information, visit the
 [Firebase Admin SDK setup guide](https://firebase.google.com/docs/admin/setup/).
 
-This gem is currently in alpha and not recommended for production use (yet).
+This gem is being used in production by https://cheddar.me
 
 ## Installation
 
