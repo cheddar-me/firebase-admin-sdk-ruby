@@ -1,5 +1,5 @@
 require "faraday"
-require "faraday_middleware"
+require_relative "../middleware/request/credentials"
 
 module Firebase
   module Admin
@@ -35,7 +35,7 @@ module Firebase
         end
 
         def post(url = nil, params = nil, headers = nil)
-          connection.post(url, params, headers)
+          connection.post(url, params.to_json, headers)
         end
 
         def patch(url = nil, params = nil, headers = nil)
@@ -55,23 +55,13 @@ module Firebase
           }
 
           @connection ||= Faraday::Connection.new(@uri, options) do |c|
-            c.use CredentialsMiddleware, credentials: @credentials unless @credentials.nil?
-            c.use Faraday::Request::UrlEncoded
-            c.use FaradayMiddleware::EncodeJson
-            c.use Faraday::Response::ParseJson
-            c.use Faraday::Response::RaiseError
+            c.request :url_encoded
+            c.request :credentials, credentials: @credentials unless @credentials.nil?
+            c.response :json
+            c.response :raise_error
             c.adapter(Faraday.default_adapter)
           end
         end
-
-        # Middleware for applying credentials to authenticate requests.
-        class CredentialsMiddleware < Faraday::Middleware
-          def on_request(env)
-            creds = options[:credentials]
-            creds.apply!(env[:request_headers])
-          end
-        end
-        private_constant :CredentialsMiddleware
       end
     end
   end
