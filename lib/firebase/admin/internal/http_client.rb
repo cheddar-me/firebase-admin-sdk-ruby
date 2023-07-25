@@ -57,8 +57,8 @@ module Firebase
           @connection ||= Faraday::Connection.new(@uri, options) do |c|
             c.request :url_encoded
             c.request :credentials, credentials: @credentials unless @credentials.nil?
-            c.response :json
             c.response :raise_error
+            c.response :json
             c.adapter(Faraday.default_adapter)
           end
         end
