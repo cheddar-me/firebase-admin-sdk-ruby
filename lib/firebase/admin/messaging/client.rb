@@ -7,10 +7,11 @@ module Firebase
       class Client
         def initialize(app)
           @project_id = app.project_id
+          @project_path = "projects/#{app.project_id}"
           @message_encoder = MessageEncoder.new
           @http_client = Firebase::Admin::Internal::HTTPClient.new(credentials: app.credentials)
           @service = Google::Apis::FcmV1::FirebaseCloudMessagingService.new
-          @service.authorization = app.credentials.credentials
+          @service.authorization = app.credentials
         end
 
         # Sends a message via Firebase Cloud Messaging (FCM).
@@ -24,7 +25,7 @@ module Firebase
         # @return [String] A message id that uniquely identifies the message.
         def send_one(message, dry_run: false)
           body = encode_message(message, dry_run: dry_run)
-          res = @service.send_message(@project_id, body, options: {skip_serialization: true})
+          res = @service.send_message(@project_path, body, options: {skip_serialization: true})
           res.name
         rescue Google::Apis::Error => e
           raise parse_fcm_error(e)
