@@ -5,15 +5,15 @@ module Firebase
       class BatchResponse
         # The list of responses (possibly empty).
         # @return [Array<SendResponse>]
-        attr_reader responses
+        attr_reader :responses
 
         # The number of successful messages.
         # @return [Integer]
-        attr_reader success_count
+        attr_reader :success_count
 
         # The number of failed messages.
         # @return [Integer]
-        attr_reader failure_count
+        attr_reader :failure_count
 
         # A response received from a batch request.
         #

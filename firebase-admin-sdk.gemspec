@@ -32,5 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "fakefs"
   spec.add_development_dependency "climate_control"
   spec.add_development_dependency "standard"
-  spec.add_development_dependency "activesupport"
+  spec.add_development_dependency "activesupport", "~> 7.0.8"
 end

@@ -49,7 +49,7 @@ module Firebase
             options = {skip_serialization: true}
             messages.each do |message|
               body = encode_message(message, dry_run: dry_run)
-              service.send_message(@project_id, body, options: options) do |res, err|
+              service.send_message(@project_path, body, options: options) do |res, err|
                 wrapped_err = parse_fcm_error(err) unless err.nil?
                 responses << SendResponse.new(message_id: res&.name, error: wrapped_err)
               end
@@ -181,7 +181,7 @@ module Firebase
         FCM_HOST = "https://fcm.googleapis.com"
         FCM_HEADERS = {"X-GOOG-API-FORMAT-VERSION": "2"}
         IID_HOST = "https://iid.googleapis.com"
-        IID_HEADERS = {"access_token_auth": "true"}
+        IID_HEADERS = {access_token_auth: "true"}
 
         FCM_ERROR_TYPES = {
           "APNS_AUTH_ERROR" => ThirdPartyAuthError,
