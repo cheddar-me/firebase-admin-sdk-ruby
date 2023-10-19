@@ -78,24 +78,24 @@ describe Firebase::Admin::Messaging::MessageEncoder do
         sound: "sound",
         tag: "tag",
         image: "image",
-        click_action: "click_action",
-        body_loc_key: "body_loc_key",
-        body_loc_args: ["body_loc_args"],
-        title_loc_key: "title_loc_key",
-        title_loc_args: ["title_loc_args"],
-        channel_id: "channel_id",
+        clickAction: "click_action",
+        bodyLocKey: "body_loc_key",
+        bodyLocArgs: ["body_loc_args"],
+        titleLocKey: "title_loc_key",
+        titleLocArgs: ["title_loc_args"],
+        channelId: "channel_id",
         ticker: "ticker",
         sticky: true,
-        event_time: current_time.dup.utc.strftime("%Y-%m-%dT%H:%M:%S.%6NZ"),
-        local_only: true,
-        notification_priority: "PRIORITY_MIN",
-        vibrate_timings: %w[0.250000000s 0.250000000s],
-        default_vibrate_timings: true,
-        default_sound: true,
-        light_settings: encoded_light_settings,
-        default_light_settings: true,
+        eventTime: current_time.dup.utc.strftime("%Y-%m-%dT%H:%M:%S.%6NZ"),
+        localOnly: true,
+        notificationPriority: "PRIORITY_MIN",
+        vibrateTimings: %w[0.250000000s 0.250000000s],
+        defaultVibrateTimings: true,
+        defaultSound: true,
+        lightSettings: encoded_light_settings,
+        defaultLightSettings: true,
         visibility: "SECRET",
-        notification_count: 5
+        notificationCount: 5
       }
     }
 
@@ -115,8 +115,8 @@ describe Firebase::Admin::Messaging::MessageEncoder do
           blue: 0x22 / 255.0,
           alpha: 0xFF / 255.0
         },
-        light_on_duration: "0.100000000s",
-        light_off_duration: "0.100000000s"
+        lightOnDuration: "0.100000000s",
+        lightOffDuration: "0.100000000s"
       }
     }
 
@@ -126,7 +126,7 @@ describe Firebase::Admin::Messaging::MessageEncoder do
 
     let(:encoded_android_fcm_options) {
       {
-        analytics_label: "android_analytics_label"
+        analyticsLabel: "android_analytics_label"
       }
     }
 
@@ -144,13 +144,13 @@ describe Firebase::Admin::Messaging::MessageEncoder do
 
     let(:encoded_android) {
       {
-        collapse_key: "collapse_key",
+        collapseKey: "collapse_key",
         priority: "high",
         ttl: "1.500000000s",
-        restricted_package_name: "test_package_name",
+        restrictedPackageName: "test_package_name",
         data: {foo: "bar"},
         notification: encoded_android_notification,
-        fcm_options: encoded_android_fcm_options
+        fcmOptions: encoded_android_fcm_options
       }
     }
 
@@ -170,7 +170,7 @@ describe Firebase::Admin::Messaging::MessageEncoder do
       {
         headers: {"apns-priority": "10"},
         payload: encoded_apns_payload,
-        fcm_options: encoded_apns_fcm_options
+        fcmOptions: encoded_apns_fcm_options
       }
     }
 
@@ -279,7 +279,7 @@ describe Firebase::Admin::Messaging::MessageEncoder do
 
     let(:encoded_apns_fcm_options) {
       {
-        analytics_label: "analytics-label",
+        analyticsLabel: "analytics-label",
         image: "image"
       }
     }

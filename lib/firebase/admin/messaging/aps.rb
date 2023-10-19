@@ -3,7 +3,7 @@ module Firebase
     module Messaging
       # Aps dictionary to be included in an APNS payload.
       class APS
-        # @return [APSAlert, String, nil]
+        # @return [Firebase::Admin::Messaging::APSAlert, String, nil]
         #   Alert to be included in the message.
         attr_accessor :alert
 
@@ -12,7 +12,7 @@ module Firebase
         #   remain unchanged.
         attr_accessor :badge
 
-        # @return [String, CriticalSound, nil]
+        # @return [Firebase::Admin::Messaging::CriticalSound, String, nil]
         #   Sound to be played with the message.
         attr_accessor :sound
 
@@ -39,12 +39,12 @@ module Firebase
 
         # Initializes an {APS}.
         #
-        # @param [APSAlert, String, nil] alert
+        # @param [Firebase::Admin::Messaging::APSAlert, String, nil] alert
         #   Alert to be included in the message (optional).
         # @param [Integer, nil] badge
         #   Badge to be displayed with the message (optional).
         #   Set to 0 to remove the badge. When not specified, the badge will remain unchanged.
-        # @param [String, CriticalSound, nil] sound
+        # @param [Firebase::Admin::Messaging::CriticalSound, String, nil] sound
         #   Sound to be played with the message (optional).
         # @param [Boolean, nil] content_available
         #   Specifies whether to configure a background update notification (optional).

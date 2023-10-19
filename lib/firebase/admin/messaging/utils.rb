@@ -61,11 +61,10 @@ module Firebase
           return nil unless value || required
           raise ArgumentError, "#{label} is required" unless value
           raise ArgumentError, "#{label} must be a string" unless value.is_a?(String)
-          unless /\A#[0-9a-fA-F]{6}\Z/.match?(value) || (/\A#[0-9a-fA-F]{8}\Z/.match?(value) && allow_alpha)
-            raise ArgumentError, "#{label} must be in the form #RRGGBB" unless allow_alpha
-            raise ArgumentError, "#{label} must be in the form #RRGGBB or #RRGGBBAA"
-          end
-          value
+          return value if /\A#[0-9a-fA-F]{6}\Z/.match?(value)
+          return value if /\A#[0-9a-fA-F]{8}\Z/.match?(value) && allow_alpha
+          raise ArgumentError, "#{label} must be in the form #RRGGBB" unless allow_alpha
+          raise ArgumentError, "#{label} must be in the form #RRGGBB or #RRGGBBAA"
         end
 
         def to_seconds_string(seconds)
