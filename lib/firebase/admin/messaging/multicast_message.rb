@@ -30,6 +30,15 @@ module Firebase
         #   Registration token of the device to which the message should be sent (optional).
         attr_accessor :tokens
 
+        # @return [String, nil]
+        #   Name of the FCM topic to which the message should be sent (optional). Topic name may contain the `/topics/`
+        #   prefix.
+        attr_accessor :topic
+
+        # @return [String, nil]
+        #   The FCM condition to which the message should be sent (optional).
+        attr_accessor :condition
+
         # Initializes a {Message}.
         #
         # @param [Hash<String, String>, nil] data
@@ -44,13 +53,20 @@ module Firebase
         #   An {FCMOptions} (optional).
         # @param [Array<String>, nil] tokens
         #   A registration token of the device to send the message to (optional).
+        # @param [String, nil] topic
+        #   The name of the FCM topic to send the message to (optional).
+        #   The topic name may contain the `/topics/` prefix.
+        # @param [String, nil] condition
+        #   The FCM condition to which the message should be sent (optional)
         def initialize(
           data: nil,
           notification: nil,
           android: nil,
           apns: nil,
           fcm_options: nil,
-          tokens: nil
+          tokens: nil,
+          topic: nil,
+          condition: nil
         )
           self.data = data
           self.notification = notification
