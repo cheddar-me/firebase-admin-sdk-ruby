@@ -79,6 +79,14 @@ module Firebase
           @client.post(with_path("accounts:delete"), {localId: validate_uid(uid, required: true)})
         end
 
+        def create_session_cookie(id_token, valid_duration = 432000)
+          payload = {
+            idToken: id_token,
+            validDuration: valid_duration
+          }
+          @client.post("projects/#{@project_id}:createSessionCookie", payload).body
+        end
+
         private
 
         def with_path(path)
