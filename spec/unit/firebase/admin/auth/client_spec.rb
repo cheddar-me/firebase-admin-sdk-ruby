@@ -25,4 +25,17 @@ describe Firebase::Admin::Auth::Client do
       end
     end
   end
+
+  describe "#create_session_cookie" do
+    before do
+      stub_auth_request(:post, "/createSessionCookie")
+        .to_return({body: "sessioncookiecontents", headers: {content_type: "application/json; charset=utf-8"}})
+    end
+
+    it "creates a cookie" do
+      session_cookie = @app.auth.create_session_cookie('idtoken')
+      expect(session_cookie["idToken"])
+      expect(session_cookie["validDuration"])
+    end
+  end
 end

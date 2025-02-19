@@ -101,6 +101,10 @@ module Firebase
           verified_claims unless revoked
         end
 
+        def create_session_cookie(id_token, valid_duration = 432000)
+          @user_manager.create_session_cookie(id_token, valid_duration)
+        end
+
         private
 
         # Checks if an ID token has been revoked.
