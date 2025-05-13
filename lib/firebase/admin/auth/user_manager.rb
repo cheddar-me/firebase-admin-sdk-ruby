@@ -87,6 +87,23 @@ module Firebase
           @client.post("projects/#{@project_id}:createSessionCookie", payload).body
         end
 
+        # Sets custom claims for a user.
+        #
+        # @param [String] uid The id of the user.
+        # @param [Hash, nil] custom_claims The custom claims to set for the user. Pass nil to remove all custom claims.
+        #
+        # @raise [ArgumentError] if uid is missing or invalid.
+        # @raise [SetCustomUserClaimsError] if the operation fails.
+        def set_custom_user_claims(uid, custom_claims)
+          payload = {
+            localId: validate_uid(uid, required: true),
+            customAttributes: custom_claims.nil? ? nil : custom_claims.to_json
+          }
+          res = @client.post(with_path("accounts:update"), payload).body
+          raise SetCustomUserClaimsError, "failed to set custom claims: #{res}" if res&.fetch("localId", nil).nil?
+          get_user_by(uid: uid)
+        end
+
         private
 
         def with_path(path)

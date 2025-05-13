@@ -16,3 +16,6 @@ Gemfile.lock
 
 # ruby version
 .ruby-version
+
+# asdf version manager
+.tool-versions

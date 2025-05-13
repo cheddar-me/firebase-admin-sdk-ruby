@@ -18,6 +18,9 @@ module Firebase
 
       # Raised when a user cannot be created.
       class CreateUserError < Error; end
+
+      # Raised when setting custom user claims fails.
+      class SetCustomUserClaimsError < Error; end
     end
   end
 end

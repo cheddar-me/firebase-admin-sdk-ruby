@@ -105,6 +105,18 @@ module Firebase
           @user_manager.create_session_cookie(id_token, valid_duration)
         end
 
+        # Sets custom claims for a user.
+        #
+        # @param [String] uid The id of the user.
+        # @param [Hash, nil] custom_claims The custom claims to set for the user. Pass nil to remove all custom claims.
+        #
+        # @raise [SetCustomUserClaimsError] if the operation fails.
+        #
+        # @return [UserRecord]
+        def set_custom_user_claims(uid, custom_claims)
+          @user_manager.set_custom_user_claims(uid, custom_claims)
+        end
+
         private
 
         # Checks if an ID token has been revoked.
