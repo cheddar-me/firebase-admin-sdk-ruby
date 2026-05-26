@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "googleauth", "> 0.16", "< 2.0"
   spec.add_runtime_dependency "faraday", "> 1", "< 3"
-  spec.add_runtime_dependency "jwt", ">= 1.5", "< 3.0"
+  spec.add_runtime_dependency "jwt", ">= 1.5", "< 4.0"
   spec.add_runtime_dependency "google-apis-fcm_v1", ">= 0.19.0", "< 1.0"
 
   spec.add_development_dependency "rake"
